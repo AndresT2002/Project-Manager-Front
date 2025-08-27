@@ -1,0 +1,11 @@
+---
+description: >
+  Todas las interfaces deben aplicar buenas prácticas de diseño:
+  - Uso obligatorio de la paleta de colores definida en `globals.scss` o `tailwind.config.js`.
+  - Diseños atractivos, consistentes y accesibles.
+  - Evitar hardcodear colores, siempre usar variables o clases definidas.
+  - Mantener jerarquía visual clara (tipografía, espaciado, contraste).
+globs: ["**/*.{tsx,jsx,css,scss,sass}"]
+alwaysApply: true
+
+---
