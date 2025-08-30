@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import Unathorized from "@/components/auth/Unathorized";
 import { getRouteConfig } from "@/functions/RBAC";
@@ -21,13 +21,22 @@ const PrivateComponent: React.FC<PrivateComponentProps> = ({
 }) => {
   const { isAuthenticated, isLoading, user } = useAuth();
   const pathname = usePathname();
+  const [initialCheckComplete, setInitialCheckComplete] = useState(false);
+
   const isExcludedRoleRoute = EXCLUDED_ROLE_ROUTES.includes(pathname);
   if (isExcludedRoleRoute) {
     return <>{children}</>;
   }
 
-  // Mostrar loading mientras se verifica la autenticación
-  if (isLoading) {
+  // Controlar la verificación inicial para evitar mostrar contenido brevemente
+  useEffect(() => {
+    if (!initialCheckComplete && !isLoading) {
+      setInitialCheckComplete(true);
+    }
+  }, [isLoading, initialCheckComplete]);
+
+  // Mostrar loading mientras se verifica la autenticación inicial
+  if (!initialCheckComplete) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 relative overflow-hidden flex items-center justify-center">
         <div className="text-center space-y-4">
@@ -36,7 +45,7 @@ const PrivateComponent: React.FC<PrivateComponentProps> = ({
           </div>
           <div className="space-y-2">
             <h3 className="text-lg font-semibold text-text-primary">
-              Verificando acceso...
+              Cargando...
             </h3>
             <p className="text-sm text-text-secondary">Un momento por favor</p>
           </div>
