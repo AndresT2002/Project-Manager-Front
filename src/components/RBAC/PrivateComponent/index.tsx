@@ -23,17 +23,25 @@ const PrivateComponent: React.FC<PrivateComponentProps> = ({
   const pathname = usePathname();
   const [initialCheckComplete, setInitialCheckComplete] = useState(false);
 
+  // TODOS los hooks deben ejecutarse ANTES de cualquier return condicional
+  // Controlar la verificación inicial para evitar mostrar contenido brevemente
+  useEffect(() => {
+    // Pequeño delay para evitar cambios de estado demasiado rápidos
+    const timeoutId = setTimeout(() => {
+      if (!initialCheckComplete && !isLoading) {
+        setInitialCheckComplete(true);
+      }
+    }, 50); // 50ms delay
+
+    return () => clearTimeout(timeoutId);
+  }, [isLoading, initialCheckComplete]);
+
   const isExcludedRoleRoute = EXCLUDED_ROLE_ROUTES.includes(pathname);
+
+  // Ruta excluida - renderizar sin verificación de autenticación
   if (isExcludedRoleRoute) {
     return <>{children}</>;
   }
-
-  // Controlar la verificación inicial para evitar mostrar contenido brevemente
-  useEffect(() => {
-    if (!initialCheckComplete && !isLoading) {
-      setInitialCheckComplete(true);
-    }
-  }, [isLoading, initialCheckComplete]);
 
   // Mostrar loading mientras se verifica la autenticación inicial
   if (!initialCheckComplete) {

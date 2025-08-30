@@ -122,12 +122,15 @@ export function useAuth() {
     try {
       setAuthState((prev) => ({ ...prev, isLoading: true, error: null }));
 
-      const response = await fetch("/api/auth/logout", {
+      // Hacer la llamada al servidor en background
+      fetch("/api/auth/logout", {
         method: "POST",
         credentials: "include",
+      }).catch((error) => {
+        console.warn("Logout API call failed:", error);
       });
 
-      // Independientemente del resultado, limpiamos el estado local
+      // Limpiar estado local inmediatamente para mejor UX
       setAuthState({
         user: null,
         isAuthenticated: false,
@@ -135,8 +138,10 @@ export function useAuth() {
         error: null,
       });
 
-      // Redirigir al login
-      router.push("/");
+      // Pequeño delay antes de redirigir para evitar conflictos de estado
+      setTimeout(() => {
+        router.push("/");
+      }, 100);
 
       return { success: true };
     } catch (error) {
@@ -148,7 +153,11 @@ export function useAuth() {
         isLoading: false,
         error: null,
       });
-      router.push("/");
+
+      setTimeout(() => {
+        router.push("/");
+      }, 100);
+
       throw error;
     }
   }, [setAuthState, router]);
@@ -194,10 +203,19 @@ export function useAuth() {
 
   // Inicializar autenticación al montar el componente
   useEffect(() => {
-    if (!isInitialized) {
-      checkAuthStatus();
-      setIsInitialized(true);
+    let mounted = true;
+
+    if (!isInitialized && mounted) {
+      checkAuthStatus().finally(() => {
+        if (mounted) {
+          setIsInitialized(true);
+        }
+      });
     }
+
+    return () => {
+      mounted = false;
+    };
   }, [isInitialized, checkAuthStatus, setIsInitialized]);
 
   return {
