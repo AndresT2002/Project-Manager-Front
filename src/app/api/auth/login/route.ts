@@ -1,33 +1,61 @@
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
-  const { email, password } = await req.json();
+  try {
+    const { email, password } = await req.json();
 
-  const res = await fetch(`${process.env.BACKEND_URL}/auth/login`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password }),
-  });
+    const res = await fetch(`${process.env.BACKEND_URL}/auth/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
 
-  if (!res.ok) {
+    if (!res.ok) {
+      const errorData = await res.json();
+      console.error("Login failed:", errorData);
+      return NextResponse.json(
+        { error: errorData.message || "Credenciales inválidas" },
+        { status: res.status }
+      );
+    }
+
+    const data = await res.json();
+    const { access_token: accessToken, refresh_token: refreshToken } = data;
+
+    // Verificar que los tokens existen
+    if (!accessToken || !refreshToken) {
+      console.error("Missing tokens in response:", data);
+      return NextResponse.json(
+        { error: "Error del servidor: tokens no encontrados" },
+        { status: 500 }
+      );
+    }
+
+    // Guardamos tokens en cookies
+    const response = NextResponse.json({
+      success: true,
+      message: "Login exitoso",
+    });
+
+    response.cookies.set("accessToken", accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 60 * 15, // 15 minutos
+    });
+
+    response.cookies.set("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 60 * 60 * 24 * 7, // 7 días
+    });
+
+    return response;
+  } catch (error) {
     return NextResponse.json(
-      { error: "Credenciales inválidas" },
-      { status: 401 }
+      { error: "Error interno del servidor" },
+      { status: 500 }
     );
   }
-
-  const { accessToken, refreshToken } = await res.json();
-
-  // Guardamos tokens en cookies
-  const response = NextResponse.json({ success: true });
-  response.cookies.set("accessToken", accessToken, {
-    httpOnly: true,
-    secure: true,
-  });
-  response.cookies.set("refreshToken", refreshToken, {
-    httpOnly: true,
-    secure: true,
-  });
-
-  return response;
 }
