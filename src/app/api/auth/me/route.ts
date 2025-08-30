@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
-export async function GET() {
+async function handleAuthRequest() {
   try {
     const accessToken = (await cookies()).get("accessToken")?.value;
 
@@ -11,13 +11,13 @@ export async function GET() {
 
     // Verificar el token con el backend
     const res = await fetch(`${process.env.BACKEND_URL}/auth/me`, {
-      method: "GET",
+      method: "POST",
       headers: {
         Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
       },
     });
-
+    console.log(res);
     if (!res.ok) {
       // Si el token es inválido, intentar refresh
       const refreshToken = (await cookies()).get("refreshToken")?.value;
@@ -72,4 +72,12 @@ export async function GET() {
       { status: 500 }
     );
   }
+}
+
+export async function GET() {
+  return handleAuthRequest();
+}
+
+export async function POST() {
+  return handleAuthRequest();
 }

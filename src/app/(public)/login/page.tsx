@@ -56,7 +56,7 @@ export default function LoginPage() {
     const checkAuthStatus = async () => {
       try {
         const response = await fetch("/api/auth/me", {
-          method: "GET",
+          method: "POST",
           credentials: "include",
         });
 
@@ -205,9 +205,9 @@ export default function LoginPage() {
                         labelVariant="required"
                         type="email"
                         placeholder="tu@email.com"
-                        leftIcon={
-                          <Mail className="h-4 w-4 text-text-tertiary" />
-                        }
+                        // leftIcon={
+                        //   <Mail className="h-4 w-4 text-text-tertiary" />
+                        // }
                         errorMessage={
                           meta.touched && meta.error ? meta.error : ""
                         }
@@ -242,9 +242,9 @@ export default function LoginPage() {
                           labelVariant="required"
                           type={showPassword ? "text" : "password"}
                           placeholder="••••••••"
-                          leftIcon={
-                            <Lock className="h-4 w-4 text-text-tertiary" />
-                          }
+                          // leftIcon={
+                          //   <Lock className="h-4 w-4 text-text-tertiary" />
+                          // }
                           errorMessage={
                             meta.touched && meta.error ? meta.error : ""
                           }
@@ -297,11 +297,11 @@ export default function LoginPage() {
                         Object.keys(errors).length > 0
                       }
                       fullWidth
-                      leftIcon={
-                        !(isLoading || isSubmitting) && (
-                          <ArrowRight className="h-4 w-4" />
-                        )
-                      }
+                      // leftIcon={
+                      //   !(isLoading || isSubmitting) && (
+                      //     <ArrowRight className="h-4 w-4" />
+                      //   )
+                      // }
                       successMessage={
                         isLoading || isSubmitting
                           ? "Verificando credenciales..."
