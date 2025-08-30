@@ -1,26 +1,16 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import {
   InputField,
-  Button,
   ButtonField,
   FormSection,
   FormTemplate,
 } from "@/components/ui/atomic-design";
-import {
-  Eye,
-  EyeOff,
-  Mail,
-  Lock,
-  ArrowRight,
-  Shield,
-  Sparkles,
-  Zap,
-} from "lucide-react";
+import { Eye, EyeOff, Shield, Sparkles, Zap } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 
 // Esquema de validación con Yup
 const LoginSchema = Yup.object().shape({
@@ -30,7 +20,6 @@ const LoginSchema = Yup.object().shape({
     .max(100, "El correo electrónico es demasiado largo"),
   password: Yup.string()
     .required("La contraseña es obligatoria")
-    // .min(8, "La contraseña debe tener al menos 8 caracteres")
     .max(50, "La contraseña es demasiado larga"),
 });
 
@@ -40,42 +29,35 @@ interface LoginFormValues {
 }
 
 export default function LoginPage() {
-  const router = useRouter();
+  const {
+    login,
+    isAuthenticated,
+    isLoading: isLoading,
+    error: authError,
+    clearError,
+  } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const initialValues: LoginFormValues = {
     email: "",
     password: "",
   };
 
-  // Verificar si el usuario ya está autenticado
+  // Redirigir si ya está autenticado
   useEffect(() => {
-    const checkAuthStatus = async () => {
-      try {
-        const response = await fetch("/api/auth/me", {
-          method: "POST",
-          credentials: "include",
-        });
+    if (isAuthenticated && !isLoading) {
+      console.log("Usuario ya autenticado, redirigiendo...");
+      window.location.href = "/dashboard";
+    }
+  }, [isAuthenticated, isLoading]);
 
-        if (response.ok) {
-          // Usuario ya está autenticado, redirigir al dashboard
-          console.log("Usuario ya autenticado, redirigiendo...");
-          router.push("/dashboard");
-          return;
-        }
-      } catch (error) {
-        console.log("Usuario no autenticado, mostrando login");
-        // Usuario no está autenticado, continuar mostrando el login
-      } finally {
-        setIsCheckingAuth(false);
-      }
-    };
-
-    checkAuthStatus();
-  }, [router]);
+  // Limpiar errores cuando cambian los valores del formulario
+  useEffect(() => {
+    if (authError) {
+      clearError();
+    }
+  }, []);
 
   const handleSubmit = async (
     values: LoginFormValues,
@@ -87,47 +69,35 @@ export default function LoginPage() {
       setErrors: (errors: Record<string, string>) => void;
     }
   ) => {
-    setIsLoading(true);
-    setError("");
+    setIsSubmitting(true);
 
     try {
-      const response = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(values),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-
-        // Manejar errores específicos del servidor
-        if (errorData.error?.includes("email")) {
-          setErrors({ email: errorData.error });
-        } else if (
-          errorData.error?.includes("contraseña") ||
-          errorData.error?.includes("password")
-        ) {
-          setErrors({ password: errorData.error });
-        } else {
-          setError(errorData.error || "Error al iniciar sesión");
-        }
-        return;
-      }
-
-      // Login exitoso
-      router.push("/dashboard"); // Cambiar según tu ruta de dashboard
+      await login(values);
+      // El hook ya maneja la redirección
+      window.location.href = "/dashboard";
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Error desconocido");
+      const error = err as Error;
+      const errorMessage = error.message;
+
+      // Manejar errores específicos del servidor
+      if (errorMessage?.includes("email")) {
+        setErrors({ email: errorMessage });
+      } else if (
+        errorMessage?.includes("contraseña") ||
+        errorMessage?.includes("password")
+      ) {
+        setErrors({ password: errorMessage });
+      } else {
+        // El error ya está manejado por el hook useAuth
+      }
     } finally {
-      setIsLoading(false);
+      setIsSubmitting(false);
       setSubmitting(false);
     }
   };
 
   // Mostrar loading mientras se verifica la autenticación
-  if (isCheckingAuth) {
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 relative overflow-hidden flex items-center justify-center">
         <div className="text-center space-y-4">
@@ -275,9 +245,11 @@ export default function LoginPage() {
                   </div>
 
                   {/* Error Message */}
-                  {error && (
+                  {authError && (
                     <div className="p-4 bg-error/10 border border-error/20 rounded-lg">
-                      <p className="text-sm text-error font-medium">{error}</p>
+                      <p className="text-sm text-error font-medium">
+                        {authError}
+                      </p>
                     </div>
                   )}
 

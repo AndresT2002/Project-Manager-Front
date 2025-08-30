@@ -1,10 +1,75 @@
-const PrivateComponent = ({ children }: { children: React.ReactNode }) => {
-  //Aca se debe validar el rol del usuario y si no tiene el rol, se debe mostrar el componente Unathorized
-  return (
-    <div>
-      <h1>Private Component</h1>
-    </div>
-  );
+"use client";
+
+import React from "react";
+import { useAuth } from "@/hooks/useAuth";
+import Unathorized from "@/components/auth/Unathorized";
+
+interface PrivateComponentProps {
+  children: React.ReactNode;
+  requiredRoles?: string[];
+  fallback?: React.ReactNode;
+}
+
+const PrivateComponent: React.FC<PrivateComponentProps> = ({
+  children,
+  requiredRoles = [],
+  fallback,
+}) => {
+  const { isAuthenticated, isLoading, user } = useAuth();
+
+  // Mostrar loading mientras se verifica la autenticación
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 relative overflow-hidden flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <div className="inline-flex items-center justify-center w-12 h-12 bg-primary-100 rounded-full">
+            <div className="h-6 w-6 border-2 border-primary-600 border-t-transparent rounded-full animate-spin" />
+          </div>
+          <div className="space-y-2">
+            <h3 className="text-lg font-semibold text-text-primary">
+              Verificando acceso...
+            </h3>
+            <p className="text-sm text-text-secondary">Un momento por favor</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Usuario no autenticado
+  if (!isAuthenticated) {
+    return (
+      fallback || (
+        <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 relative overflow-hidden flex items-center justify-center">
+          <div className="text-center space-y-4">
+            <div className="inline-flex items-center justify-center w-12 h-12 bg-red-100 rounded-full">
+              <div className="h-6 w-6 text-red-600">⚠️</div>
+            </div>
+            <div className="space-y-2">
+              <h3 className="text-lg font-semibold text-text-primary">
+                Acceso denegado
+              </h3>
+              <p className="text-sm text-text-secondary">
+                Debes iniciar sesión para acceder a esta página
+              </p>
+            </div>
+          </div>
+        </div>
+      )
+    );
+  }
+
+  // Verificar roles si se requieren
+  if (requiredRoles.length > 0 && user?.role) {
+    const hasRequiredRole = requiredRoles.includes(user.role);
+
+    if (!hasRequiredRole) {
+      return <Unathorized />;
+    }
+  }
+
+  // Usuario autenticado y con permisos adecuados
+  return <>{children}</>;
 };
 
 export { PrivateComponent };
