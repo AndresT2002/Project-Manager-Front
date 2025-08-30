@@ -14,6 +14,8 @@ export interface ButtonFieldProps extends React.ComponentProps<typeof Button> {
   labelClassName?: string;
   buttonClassName?: string;
   labelPosition?: "top" | "left" | "bottom";
+  error?: boolean;
+  success?: boolean;
 }
 
 const ButtonField = forwardRef<HTMLButtonElement, ButtonFieldProps>(
@@ -66,9 +68,7 @@ const ButtonField = forwardRef<HTMLButtonElement, ButtonFieldProps>(
           {helperText && !hasError && !hasSuccess && (
             <p className="text-sm text-text-tertiary">{helperText}</p>
           )}
-          {errorMessage && (
-            <p className="text-sm text-error">{errorMessage}</p>
-          )}
+          {errorMessage && <p className="text-sm text-error">{errorMessage}</p>}
           {successMessage && (
             <p className="text-sm text-success">{successMessage}</p>
           )}
@@ -105,11 +105,7 @@ const ButtonField = forwardRef<HTMLButtonElement, ButtonFieldProps>(
       }
     };
 
-    return (
-      <div className={cn("space-y-2", className)}>
-        {renderContent()}
-      </div>
-    );
+    return <div className={cn("space-y-2", className)}>{renderContent()}</div>;
   }
 );
 

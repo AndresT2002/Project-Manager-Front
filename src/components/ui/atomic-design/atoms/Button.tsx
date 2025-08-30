@@ -10,6 +10,8 @@ export interface ButtonProps extends React.ComponentProps<typeof ShadcnButton> {
   rightIcon?: React.ReactNode;
   fullWidth?: boolean;
   rounded?: boolean;
+  error?: boolean;
+  success?: boolean;
 }
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
@@ -24,6 +26,8 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       rightIcon,
       fullWidth = false,
       rounded = false,
+      error = false,
+      success = false,
       disabled,
       children,
       ...props
@@ -54,8 +58,16 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       // Aplicar estilos según la variante
       switch (variant) {
         case "default":
-          baseStyles.backgroundColor = isHovered ? "#1d4ed8" : "#2563eb";
-          baseStyles.color = "#ffffff";
+          if (error) {
+            baseStyles.backgroundColor = isHovered ? "#dc2626" : "#ef4444";
+            baseStyles.color = "#ffffff";
+          } else if (success) {
+            baseStyles.backgroundColor = isHovered ? "#16a34a" : "#22c55e";
+            baseStyles.color = "#ffffff";
+          } else {
+            baseStyles.backgroundColor = isHovered ? "#1d4ed8" : "#2563eb";
+            baseStyles.color = "#ffffff";
+          }
           baseStyles.boxShadow = "0 1px 2px 0 rgba(0, 0, 0, 0.05)";
           break;
         case "destructive":
@@ -64,9 +76,19 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           baseStyles.boxShadow = "0 1px 2px 0 rgba(0, 0, 0, 0.05)";
           break;
         case "outline":
-          baseStyles.backgroundColor = isHovered ? "#f3f4f6" : "transparent";
-          baseStyles.color = "#111827";
-          baseStyles.border = "1px solid #e5e7eb";
+          if (error) {
+            baseStyles.border = "1px solid #ef4444";
+            baseStyles.color = "#dc2626";
+            baseStyles.backgroundColor = isHovered ? "#fef2f2" : "transparent";
+          } else if (success) {
+            baseStyles.border = "1px solid #22c55e";
+            baseStyles.color = "#16a34a";
+            baseStyles.backgroundColor = isHovered ? "#f0fdf4" : "transparent";
+          } else {
+            baseStyles.backgroundColor = isHovered ? "#f3f4f6" : "transparent";
+            baseStyles.color = "#111827";
+            baseStyles.border = "1px solid #e5e7eb";
+          }
           break;
         case "secondary":
           baseStyles.backgroundColor = isHovered ? "#16a34a" : "#22c55e";
@@ -74,12 +96,26 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           baseStyles.boxShadow = "0 1px 2px 0 rgba(0, 0, 0, 0.05)";
           break;
         case "ghost":
-          baseStyles.backgroundColor = isHovered ? "#f3f4f6" : "transparent";
-          baseStyles.color = "#111827";
+          if (error) {
+            baseStyles.backgroundColor = isHovered ? "#fef2f2" : "transparent";
+            baseStyles.color = "#dc2626";
+          } else if (success) {
+            baseStyles.backgroundColor = isHovered ? "#f0fdf4" : "transparent";
+            baseStyles.color = "#16a34a";
+          } else {
+            baseStyles.backgroundColor = isHovered ? "#f3f4f6" : "transparent";
+            baseStyles.color = "#111827";
+          }
           break;
         case "link":
+          if (error) {
+            baseStyles.color = "#dc2626";
+          } else if (success) {
+            baseStyles.color = "#16a34a";
+          } else {
+            baseStyles.color = "#2563eb";
+          }
           baseStyles.backgroundColor = "transparent";
-          baseStyles.color = "#2563eb";
           baseStyles.textDecoration = isHovered ? "underline" : "none";
           baseStyles.textUnderlineOffset = "4px";
           break;

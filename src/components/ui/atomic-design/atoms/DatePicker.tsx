@@ -363,7 +363,7 @@ const DatePicker = forwardRef<HTMLInputElement, DatePickerProps>(
                 const isTodayDate = isToday(date);
                 const isDisabled = isDateDisabled(date);
 
-                let buttonStyle: React.CSSProperties = {
+                const buttonStyle: React.CSSProperties = {
                   height: "32px",
                   width: "32px",
                   display: "flex",

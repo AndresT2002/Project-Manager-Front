@@ -25,7 +25,8 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({
 
   const variantClasses = {
     default: "divide-x divide-border-primary",
-    outlined: "border border-border-primary rounded-md divide-x divide-border-primary",
+    outlined:
+      "border border-border-primary rounded-md divide-x divide-border-primary",
   };
 
   const sizeClasses = {
@@ -36,22 +37,40 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({
 
   // Aplicar estilos especiales a los botones hijos
   const childrenWithProps = React.Children.map(children, (child, index) => {
+    const childCount = React.Children.count(children);
+    const isFirst = index === 0;
+    const isLast = index === childCount - 1;
+    const isMiddle = !isFirst && !isLast;
+
     if (React.isValidElement(child)) {
-      return React.cloneElement(child, {
-        className: cn(
-          child.props.className,
-          // Remover bordes redondeados de los botones internos
-          orientation === "horizontal" && index === 0 && "rounded-r-none",
-          orientation === "horizontal" && index > 0 && index < React.Children.count(children) - 1 && "rounded-none",
-          orientation === "horizontal" && index === React.Children.count(children) - 1 && "rounded-l-none",
-          orientation === "vertical" && index === 0 && "rounded-b-none",
-          orientation === "vertical" && index > 0 && index < React.Children.count(children) - 1 && "rounded-none",
-          orientation === "vertical" && index === React.Children.count(children) - 1 && "rounded-t-none",
-          // Remover bordes cuando hay divisores
-          variant === "default" && orientation === "horizontal" && index > 0 && "border-l-0",
-          variant === "default" && orientation === "vertical" && index > 0 && "border-t-0"
-        ),
-      });
+      // Usar un wrapper div en lugar de modificar directamente el elemento
+      return (
+        <div
+          key={index}
+          className={cn(
+            // Estilos base del wrapper
+            orientation === "horizontal" ? "inline-block" : "block",
+            // Remover bordes redondeados de los botones internos
+            orientation === "horizontal" && isFirst && "rounded-r-none",
+            orientation === "horizontal" && isMiddle && "rounded-none",
+            orientation === "horizontal" && isLast && "rounded-l-none",
+            orientation === "vertical" && isFirst && "rounded-b-none",
+            orientation === "vertical" && isMiddle && "rounded-none",
+            orientation === "vertical" && isLast && "rounded-t-none",
+            // Remover bordes cuando hay divisores
+            variant === "default" &&
+              orientation === "horizontal" &&
+              !isFirst &&
+              "border-l-0",
+            variant === "default" &&
+              orientation === "vertical" &&
+              !isFirst &&
+              "border-t-0"
+          )}
+        >
+          {child}
+        </div>
+      );
     }
     return child;
   });
