@@ -3,19 +3,28 @@
 import React from "react";
 import { useAuth } from "@/hooks/useAuth";
 import Unathorized from "@/components/auth/Unathorized";
+import { getRouteConfig } from "@/functions/RBAC";
+import { usePathname } from "next/navigation";
+import { Role } from "@/types/enums";
+import { EXCLUDED_ROLE_ROUTES } from "@/constants/RBAC";
 
 interface PrivateComponentProps {
   children: React.ReactNode;
-  requiredRoles?: string[];
+  //   requiredRoles?: string[];
   fallback?: React.ReactNode;
 }
 
 const PrivateComponent: React.FC<PrivateComponentProps> = ({
   children,
-  requiredRoles = [],
+  //   requiredRoles = [],
   fallback,
 }) => {
   const { isAuthenticated, isLoading, user } = useAuth();
+  const pathname = usePathname();
+  const isExcludedRoleRoute = EXCLUDED_ROLE_ROUTES.includes(pathname);
+  if (isExcludedRoleRoute) {
+    return <>{children}</>;
+  }
 
   // Mostrar loading mientras se verifica la autenticación
   if (isLoading) {
@@ -59,9 +68,11 @@ const PrivateComponent: React.FC<PrivateComponentProps> = ({
     );
   }
 
+  const requiredRoles = getRouteConfig(pathname)?.requiredRoles;
+  console.log(requiredRoles);
   // Verificar roles si se requieren
-  if (requiredRoles.length > 0 && user?.role) {
-    const hasRequiredRole = requiredRoles.includes(user.role);
+  if (requiredRoles && requiredRoles.length > 0 && user?.role) {
+    const hasRequiredRole = requiredRoles.includes(user.role as Role);
 
     if (!hasRequiredRole) {
       return <Unathorized />;
