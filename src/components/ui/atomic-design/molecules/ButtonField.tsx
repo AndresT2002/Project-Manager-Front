@@ -33,6 +33,8 @@ const ButtonField = forwardRef<HTMLButtonElement, ButtonFieldProps>(
       labelPosition = "top",
       error,
       success,
+      variant,
+      size,
       ...props
     },
     ref
@@ -46,7 +48,9 @@ const ButtonField = forwardRef<HTMLButtonElement, ButtonFieldProps>(
           ref={ref}
           error={hasError}
           success={hasSuccess}
-          className={buttonClassName}
+          variant={variant}
+          size={size}
+          className={cn(buttonClassName, className)}
           {...props}
         />
       );
@@ -105,7 +109,7 @@ const ButtonField = forwardRef<HTMLButtonElement, ButtonFieldProps>(
       }
     };
 
-    return <div className={cn("space-y-2", className)}>{renderContent()}</div>;
+    return <div className="space-y-2">{renderContent()}</div>;
   }
 );
 

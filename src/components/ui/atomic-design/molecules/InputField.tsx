@@ -2,6 +2,7 @@ import React, { forwardRef, useId } from "react";
 import { cn } from "@/lib/utils";
 import Input from "../atoms/Input";
 import Label from "../atoms/Label";
+import { FormikErrors } from "formik";
 
 export interface InputFieldProps extends React.ComponentProps<typeof Input> {
   label?: string;
@@ -13,6 +14,7 @@ export interface InputFieldProps extends React.ComponentProps<typeof Input> {
   className?: string;
   labelClassName?: string;
   inputClassName?: string;
+  errors?: FormikErrors<string | undefined>;
 }
 
 const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
@@ -30,6 +32,7 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
       error,
       success,
       id,
+      errors,
       ...props
     },
     ref
@@ -59,7 +62,7 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
           id={inputId}
           error={hasError}
           success={hasSuccess}
-          className={inputClassName}
+          className={cn("h-12", inputClassName)}
           {...props}
         />
 
@@ -68,8 +71,8 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
             {helperText && !hasError && !hasSuccess && (
               <p className="text-sm text-text-tertiary">{helperText}</p>
             )}
-            {errorMessage && (
-              <p className="text-sm text-error">{errorMessage}</p>
+            {typeof errors === "string" && (
+              <p className="text-sm text-error">{errors}</p>
             )}
             {successMessage && (
               <p className="text-sm text-success">{successMessage}</p>

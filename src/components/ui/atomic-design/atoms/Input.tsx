@@ -16,15 +16,15 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     ref
   ) => {
     const baseClasses =
-      "transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-0";
+      "transition-all duration-20 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:shadow-md focus-visible:ring-0 focus-visible:ring-offset-0 focus:border-2 focus:border-blue-500";
 
     const variantClasses = {
       default:
-        "border-border-primary bg-background-primary text-text-primary placeholder:text-text-tertiary focus:border-border-focus focus:ring-primary-500/20",
+        "border-border-primary bg-background-primary text-text-primary placeholder:text-text-tertiary",
       filled:
-        "border-0 bg-background-secondary text-text-primary placeholder:text-text-tertiary focus:bg-background-primary focus:ring-primary-500/20",
+        "border-0 bg-background-secondary text-text-primary placeholder:text-text-tertiary focus:bg-background-primary",
       outlined:
-        "border-2 border-border-primary bg-transparent text-text-primary placeholder:text-text-tertiary focus:border-primary-500 focus:ring-primary-500/20",
+        "border-2 border-border-primary bg-transparent text-text-primary placeholder:text-text-tertiary",
     };
 
     const sizeClasses = {
