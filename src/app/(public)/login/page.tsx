@@ -454,14 +454,14 @@ export default function LoginPage() {
                 disabled={isLoading || isSubmitting}
                 success={formik.touched.password && !formik.errors.password}
               />
-              <div className="text-sm text-end text-primary-900 hover:text-primary-700 transition-colors">
+              <div className="text-sm text-end text-primary-700 hover:text-primary-500 transition-colors">
                 <Link href="/register">Forgot your password?</Link>
               </div>
               <ButtonField
                 type="submit"
                 variant="primary"
                 fullWidth
-                className="h-12"
+                className="h-12 text-lg"
                 loading={isLoading || isSubmitting}
               >
                 Login
@@ -472,7 +472,10 @@ export default function LoginPage() {
       </CardContainer>
       <div className="mt-4">
         Don't have an account?{" "}
-        <Link href="/register" className="text-primary">
+        <Link
+          href="/register"
+          className="text-primary-700 hover:text-primary-500 transition-colors"
+        >
           Sign up
         </Link>
       </div>

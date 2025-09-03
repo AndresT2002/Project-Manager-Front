@@ -89,6 +89,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       customButtonVariants({ variant: finalVariant, size }),
       fullWidth && "w-full",
       rounded && "rounded-full",
+      !isDisabled && "cursor-pointer",
       className
     );
 

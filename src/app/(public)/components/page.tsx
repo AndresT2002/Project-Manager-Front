@@ -66,55 +66,55 @@ export default function ComponentsPage() {
     }, 2000);
   };
 
-  // Definir los colores directamente para evitar problemas de hidratación
-  const primaryColors = {
-    50: "#eff6ff",
-    100: "#dbeafe",
-    200: "#bfdbfe",
-    300: "#93c5fd",
-    400: "#60a5fa",
-    500: "#3b82f6",
-    600: "#2563eb",
-    700: "#1d4ed8",
-    800: "#1e40af",
-    900: "#1e3a8a",
-    950: "#172554",
-  };
+  // Definir las clases de Tailwind para los colores
+  const primaryColors = [
+    "bg-primary-50",
+    "bg-primary-100",
+    "bg-primary-200",
+    "bg-primary-300",
+    "bg-primary-400",
+    "bg-primary-500",
+    "bg-primary-600",
+    "bg-primary-700",
+    "bg-primary-800",
+    "bg-primary-900",
+    "bg-primary-950",
+  ];
 
-  const secondaryColors = {
-    50: "#f0fdf4",
-    100: "#dcfce7",
-    200: "#bbf7d0",
-    300: "#86efac",
-    400: "#4ade80",
-    500: "#22c55e",
-    600: "#16a34a",
-    700: "#15803d",
-    800: "#166534",
-    900: "#14532d",
-    950: "#052e16",
-  };
+  const secondaryColors = [
+    "bg-secondary-50",
+    "bg-secondary-100",
+    "bg-secondary-200",
+    "bg-secondary-300",
+    "bg-secondary-400",
+    "bg-secondary-500",
+    "bg-secondary-600",
+    "bg-secondary-700",
+    "bg-secondary-800",
+    "bg-secondary-900",
+    "bg-secondary-950",
+  ];
 
-  const accentColors = {
-    50: "#fff7ed",
-    100: "#ffedd5",
-    200: "#fed7aa",
-    300: "#fdba74",
-    400: "#fb923c",
-    500: "#f97316",
-    600: "#ea580c",
-    700: "#c2410c",
-    800: "#9a3412",
-    900: "#7c2d12",
-    950: "#431407",
-  };
+  const accentColors = [
+    "bg-accent-50",
+    "bg-accent-100",
+    "bg-accent-200",
+    "bg-accent-300",
+    "bg-accent-400",
+    "bg-accent-500",
+    "bg-accent-600",
+    "bg-accent-700",
+    "bg-accent-800",
+    "bg-accent-900",
+    "bg-accent-950",
+  ];
 
-  const semanticColors = {
-    success: "#22c55e",
-    warning: "#f97316",
-    error: "#ef4444",
-    info: "#3b82f6",
-  };
+  const semanticColors = [
+    { name: "success", className: "bg-success" },
+    { name: "warning", className: "bg-warning" },
+    { name: "error", className: "bg-error" },
+    { name: "info", className: "bg-info" },
+  ];
 
   return (
     <div className="min-h-screen bg-background-primary p-8">
@@ -142,23 +142,30 @@ export default function ComponentsPage() {
               Colores Primarios (Azul)
             </h3>
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-              {Object.entries(primaryColors).map(([shade, color]) => (
-                <div key={shade} className="space-y-2">
-                  <div
-                    className="h-20 rounded-lg border border-border-primary"
-                    style={{ backgroundColor: color }}
-                    title={`primary-${shade}`}
-                  />
-                  <div className="text-center">
-                    <p className="text-sm font-medium text-text-primary">
-                      {shade}
-                    </p>
-                    <p className="text-xs text-text-tertiary">
-                      primary-{shade}
-                    </p>
+              {primaryColors.map((className, index) => {
+                const shade =
+                  index === 0
+                    ? "50"
+                    : index === 10
+                    ? "950"
+                    : (index * 100).toString();
+                return (
+                  <div key={className} className="space-y-2">
+                    <div
+                      className={`h-20 rounded-lg border border-border-primary ${className}`}
+                      title={`primary-${shade}`}
+                    />
+                    <div className="text-center">
+                      <p className="text-sm font-medium text-text-primary">
+                        {shade}
+                      </p>
+                      <p className="text-xs text-text-tertiary">
+                        primary-{shade}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
 
@@ -168,23 +175,30 @@ export default function ComponentsPage() {
               Colores Secundarios (Verde)
             </h3>
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-              {Object.entries(secondaryColors).map(([shade, color]) => (
-                <div key={shade} className="space-y-2">
-                  <div
-                    className="h-20 rounded-lg border border-border-primary"
-                    style={{ backgroundColor: color }}
-                    title={`secondary-${shade}`}
-                  />
-                  <div className="text-center">
-                    <p className="text-sm font-medium text-text-primary">
-                      {shade}
-                    </p>
-                    <p className="text-xs text-text-tertiary">
-                      secondary-{shade}
-                    </p>
+              {secondaryColors.map((className, index) => {
+                const shade =
+                  index === 0
+                    ? "50"
+                    : index === 10
+                    ? "950"
+                    : (index * 100).toString();
+                return (
+                  <div key={className} className="space-y-2">
+                    <div
+                      className={`h-20 rounded-lg border border-border-primary ${className}`}
+                      title={`secondary-${shade}`}
+                    />
+                    <div className="text-center">
+                      <p className="text-sm font-medium text-text-primary">
+                        {shade}
+                      </p>
+                      <p className="text-xs text-text-tertiary">
+                        secondary-{shade}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
 
@@ -194,21 +208,30 @@ export default function ComponentsPage() {
               Colores de Acento (Naranja)
             </h3>
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-              {Object.entries(accentColors).map(([shade, color]) => (
-                <div key={shade} className="space-y-2">
-                  <div
-                    className="h-20 rounded-lg border border-border-primary"
-                    style={{ backgroundColor: color }}
-                    title={`accent-${shade}`}
-                  />
-                  <div className="text-center">
-                    <p className="text-sm font-medium text-text-primary">
-                      {shade}
-                    </p>
-                    <p className="text-xs text-text-tertiary">accent-{shade}</p>
+              {accentColors.map((className, index) => {
+                const shade =
+                  index === 0
+                    ? "50"
+                    : index === 10
+                    ? "950"
+                    : (index * 100).toString();
+                return (
+                  <div key={className} className="space-y-2">
+                    <div
+                      className={`h-20 rounded-lg border border-border-primary ${className}`}
+                      title={`accent-${shade}`}
+                    />
+                    <div className="text-center">
+                      <p className="text-sm font-medium text-text-primary">
+                        {shade}
+                      </p>
+                      <p className="text-xs text-text-tertiary">
+                        accent-{shade}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
 
@@ -218,17 +241,16 @@ export default function ComponentsPage() {
               Colores Semánticos
             </h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {Object.entries(semanticColors).map(([name, color]) => (
+              {semanticColors.map(({ name, className }) => (
                 <div key={name} className="space-y-2">
                   <div
-                    className="h-20 rounded-lg border border-border-primary"
-                    style={{ backgroundColor: color }}
+                    className={`h-20 rounded-lg border border-border-primary ${className}`}
                   />
                   <div className="text-center">
                     <p className="text-sm font-medium text-text-primary capitalize">
                       {name}
                     </p>
-                    <p className="text-xs text-text-tertiary">bg-{name}</p>
+                    <p className="text-xs text-text-tertiary">{className}</p>
                   </div>
                 </div>
               ))}
@@ -253,9 +275,9 @@ export default function ComponentsPage() {
               </h4>
               <div className="flex flex-wrap gap-4">
                 <Button variant="default">Default</Button>
-                <Button variant="destructive">Destructive</Button>
+                <Button variant="primary">Primary</Button>
                 <Button variant="outline">Outline</Button>
-                <Button variant="secondary">Secondary</Button>
+                <Button variant="ghost">Ghost</Button>
                 <Button variant="ghost">Ghost</Button>
                 <Button variant="link">Link</Button>
               </div>
@@ -360,7 +382,7 @@ export default function ComponentsPage() {
               />
               <IconButton
                 icon={<Star className="h-4 w-4" />}
-                variant="secondary"
+                variant="outline"
                 tooltip="Destacar"
               />
               <IconButton
@@ -555,7 +577,7 @@ export default function ComponentsPage() {
 
               <ButtonField
                 label="Botón de Carga"
-                variant="secondary"
+                variant="default"
                 loading={loadingStates.secondary}
                 loadingText="Procesando..."
                 helperText="Botón con estado de carga"
@@ -566,7 +588,7 @@ export default function ComponentsPage() {
 
               <ButtonField
                 label="Botón Destructivo"
-                variant="destructive"
+                variant="primary"
                 helperText="Acción que no se puede deshacer"
               >
                 Eliminar
