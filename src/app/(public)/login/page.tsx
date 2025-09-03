@@ -15,6 +15,7 @@ import { CardContainer } from "@/components/ui/atomic-design/atoms/Card";
 import { Title } from "@/components/ui/atomic-design/typography/Title";
 import { Text } from "@/components/ui/atomic-design/typography/Text";
 import Link from "next/link";
+import Image from "next/image";
 
 // Esquema de validación con Yup
 const LoginSchema = Yup.object().shape({
@@ -407,6 +408,17 @@ export default function LoginPage() {
     // </div>
     <section className="min-h-screen flex items-center justify-center flex-col gap-4">
       <div className="text-center ">
+        <div className="flex items-center justify-center px-4">
+          <Image
+            src="/logos/orbitly-sliced.png"
+            alt="Orbitly Logo"
+            width={300}
+            height={120}
+            className="w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg h-auto object-contain"
+            priority
+          />
+        </div>
+
         <Title title="Welcome Back" />
         <Text
           text="Enter your credentials to access your account."
@@ -442,7 +454,7 @@ export default function LoginPage() {
                 disabled={isLoading || isSubmitting}
                 success={formik.touched.password && !formik.errors.password}
               />
-              <div className="text-sm text-end text-primary transition-colors">
+              <div className="text-sm text-end text-primary-900 hover:text-primary-700 transition-colors">
                 <Link href="/register">Forgot your password?</Link>
               </div>
               <ButtonField
@@ -458,6 +470,12 @@ export default function LoginPage() {
           </Form>
         </Formik>
       </CardContainer>
+      <div className="mt-4">
+        Don't have an account?{" "}
+        <Link href="/register" className="text-primary">
+          Sign up
+        </Link>
+      </div>
     </section>
   );
 }

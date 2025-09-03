@@ -27,7 +27,7 @@ const customButtonVariants = cva(
         default:
           "bg-primary text-primary-foreground shadow-xs hover:bg-primary/90",
         primary:
-          "bg-blue-500 text-white shadow-xs hover:bg-blue-600 hover:shadow-md",
+          "bg-primary-900 text-text-inverse shadow-xs hover:bg-primary-800 hover:shadow-md",
         outline:
           "border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50",
         ghost:

@@ -16,7 +16,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     ref
   ) => {
     const baseClasses =
-      "transition-all duration-20 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:shadow-md focus-visible:ring-0 focus-visible:ring-offset-0 focus:border-2 focus:border-blue-500";
+      "transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary-900/50 focus:shadow-md focus-visible:ring-0 focus-visible:ring-offset-0 focus:border-2 focus:border-primary-900";
 
     const variantClasses = {
       default:
