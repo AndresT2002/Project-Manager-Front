@@ -38,7 +38,7 @@ module.exports = {
           950: "var(--color-secondary-950)",
         },
 
-        // Colores de Acento - Naranja energía
+        // Colores de Acento - Verde Claro energía
         accent: {
           50: "var(--color-accent-50)",
           100: "var(--color-accent-100)",
