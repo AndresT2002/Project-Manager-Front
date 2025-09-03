@@ -406,7 +406,15 @@ export default function LoginPage() {
     //     </div>
     //   </footer>
     // </div>
-    <section className="min-h-screen flex items-center justify-center flex-col gap-4">
+    <section
+      className="min-h-screen flex items-center justify-center flex-col gap-4"
+      style={{
+        backgroundImage: 'url("/animations/background.svg")',
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+      }}
+    >
       <div className="text-center ">
         <div className="flex items-center justify-center px-4">
           <Image
@@ -419,14 +427,14 @@ export default function LoginPage() {
           />
         </div>
 
-        <Title title="Welcome Back" />
+        <Title title="Welcome Back" className="text-white" />
         <Text
           text="Enter your credentials to access your account."
-          className="text-gray-400"
+          className="text-white"
         />
       </div>
 
-      <CardContainer className="w-full mx-5 lg:w-1/4  border-none shadow-gray-200 shadow-lg rounded-lg min-h-[350px]">
+      <CardContainer className="w-full mx-5 lg:w-1/4 border-none shadow-secondary-600 shadow-lg rounded-lg min-h-[350px] bg-gray-50">
         <Formik
           initialValues={initialValues}
           onSubmit={handleSubmit}
@@ -470,11 +478,11 @@ export default function LoginPage() {
           </Form>
         </Formik>
       </CardContainer>
-      <div className="mt-4">
+      <div className="mt-4 text-white/80">
         Don't have an account?{" "}
         <Link
           href="/register"
-          className="text-primary-700 hover:text-primary-500 transition-colors"
+          className="text-white hover:text-primary-500 transition-colors"
         >
           Sign up
         </Link>

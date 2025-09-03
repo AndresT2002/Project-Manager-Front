@@ -1,0 +1,77 @@
+<!-- Fondo Orbitly - Versión llamativa y animada -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <!-- Degradado animado -->
+    <radialGradient id="gRad" cx="50%" cy="50%" r="80%">
+      <stop offset="0%" stop-color="#0f3550">
+        <animate attributeName="stop-color" values="#0f3550;#123e60;#0f3550" dur="15s" repeatCount="indefinite"/>
+      </stop>
+      <stop offset="70%" stop-color="#1b6a88">
+        <animate attributeName="stop-color" values="#1b6a88;#2aa19a;#1b6a88" dur="12s" repeatCount="indefinite"/>
+      </stop>
+      <stop offset="100%" stop-color="#0a192f"/>
+    </radialGradient>
+
+    <!-- Glow para nodos -->
+    <filter id="fGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Fondo general -->
+  <rect width="100%" height="100%" fill="url(#gRad)"/>
+
+  <!-- Grupo principal de órbitas -->
+  <g transform="translate(800,450)">
+    <!-- Orbitas exteriores (rotación lenta) -->
+    <g>
+      <ellipse rx="480" ry="180" fill="none" stroke="#2aa19a" stroke-opacity="0.25" stroke-width="2">
+        <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="60s" repeatCount="indefinite"/>
+      </ellipse>
+      <ellipse rx="380" ry="140" fill="none" stroke="#60f6ff" stroke-opacity="0.15" stroke-width="2">
+        <animateTransform attributeName="transform" type="rotate" from="360" to="0" dur="50s" repeatCount="indefinite"/>
+      </ellipse>
+    </g>
+
+    <!-- Orbitas interiores (más rápidas) -->
+    <g>
+      <ellipse rx="260" ry="90" fill="none" stroke="#ffffff" stroke-opacity="0.2" stroke-width="1.5">
+        <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="30s" repeatCount="indefinite"/>
+      </ellipse>
+      <ellipse rx="180" ry="60" fill="none" stroke="#00ffd5" stroke-opacity="0.25" stroke-width="1.5">
+        <animateTransform attributeName="transform" type="rotate" from="360" to="0" dur="25s" repeatCount="indefinite"/>
+      </ellipse>
+    </g>
+
+    <!-- Nodos pulsantes -->
+    <g filter="url(#fGlow)">
+      <circle cx="380" cy="0" r="6" fill="#2aa19a">
+        <animate attributeName="r" values="6;10;6" dur="3s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="-260" cy="40" r="5" fill="#60f6ff">
+        <animate attributeName="r" values="5;8;5" dur="2.5s" repeatCount="indefinite"/>
+      </circle>
+
+    </g>
+  </g>
+
+  <!-- Partículas flotantes -->
+  <g fill="#ffffff" opacity="0.6">
+    <circle cx="200" cy="100" r="2">
+      <animateTransform attributeName="transform" type="translate" values="0 0; 0 20; 0 0" dur="8s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="1400" cy="200" r="1.5">
+      <animateTransform attributeName="transform" type="translate" values="0 0; 0 -15; 0 0" dur="6s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="800" cy="50" r="2.2">
+      <animateTransform attributeName="transform" type="translate" values="0 0; 0 25; 0 0" dur="10s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="1200" cy="600" r="1.8">
+      <animateTransform attributeName="transform" type="translate" values="0 0; 0 -18; 0 0" dur="7s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+</svg>
