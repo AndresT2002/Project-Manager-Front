@@ -34,7 +34,7 @@ const Unauthorized = () => {
         {/* Acción */}
         <div className="pt-4">
           <Button
-            variant="destructive"
+            variant="primary"
             className="rounded-xl shadow-lg hover:scale-105 transition-transform"
             onClick={() => (window.location.href = "/")}
           >

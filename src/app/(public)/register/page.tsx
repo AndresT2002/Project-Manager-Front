@@ -13,7 +13,7 @@ import Image from "next/image";
 import SplitText from "@/components/animated/SplitText";
 
 // Esquema de validación con Yup
-const LoginSchema = Yup.object().shape({
+const RegisterSchema = Yup.object().shape({
   email: Yup.string()
     .email("Email invalid")
     .required("Email is required")
@@ -21,15 +21,30 @@ const LoginSchema = Yup.object().shape({
   password: Yup.string()
     .required("Password is required")
     .max(50, "Password is too long"),
+  confirmPassword: Yup.string()
+    .required("Confirm password is required")
+    .max(50, "Confirm password is too long")
+    .oneOf([Yup.ref("password")], "Passwords must match"),
+  name: Yup.string()
+    .required("Name is required")
+    .max(50, "Name is too long")
+    .matches(/^[a-zA-Z]+$/, "Name must contain only letters"),
+  lastName: Yup.string()
+    .required("Last name is required")
+    .max(50, "Last name is too long")
+    .matches(/^[a-zA-Z]+$/, "Last name must contain only letters"),
 });
 
-interface LoginFormValues {
+interface RegisterFormValues {
   email: string;
   password: string;
+  confirmPassword: string;
+  name: string;
+  lastName: string;
 }
 const currentYear = new Date().getFullYear();
 
-export default function LoginPage() {
+export default function RegisterPage() {
   const {
     login,
     isAuthenticated,
@@ -40,9 +55,12 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [initialCheckComplete, setInitialCheckComplete] = useState(false);
 
-  const initialValues: LoginFormValues = {
+  const initialValues: RegisterFormValues = {
     email: "",
     password: "",
+    confirmPassword: "",
+    name: "",
+    lastName: "",
   };
 
   // Controlar la verificación inicial
@@ -72,7 +90,7 @@ export default function LoginPage() {
 
   const handleSubmit = useCallback(
     async (
-      values: LoginFormValues,
+      values: RegisterFormValues,
       {
         setSubmitting,
         setErrors,
@@ -90,11 +108,14 @@ export default function LoginPage() {
 
         if (errorMessage?.includes("email")) {
           setErrors({ email: errorMessage });
-        } else if (
-          errorMessage?.includes("contraseña") ||
-          errorMessage?.includes("password")
-        ) {
+        } else if (errorMessage?.includes("password")) {
           setErrors({ password: errorMessage });
+        } else if (errorMessage?.includes("confirmPassword")) {
+          setErrors({ confirmPassword: errorMessage });
+        } else if (errorMessage?.includes("name")) {
+          setErrors({ name: errorMessage });
+        } else if (errorMessage?.includes("lastName")) {
+          setErrors({ lastName: errorMessage });
         }
       } finally {
         setSubmitting(false);
@@ -105,7 +126,7 @@ export default function LoginPage() {
 
   const formik = useFormik({
     initialValues,
-    validationSchema: LoginSchema,
+    validationSchema: RegisterSchema,
     onSubmit: handleSubmit,
     validateOnChange: true,
     validateOnBlur: true,
@@ -154,10 +175,10 @@ export default function LoginPage() {
 
         {/* <Title title="Welcome Back" className="text-white" /> */}
         <SplitText
-          text="Welcome back!"
-          className="text-5xl font-bold text-center text-white drop-shadow-lg"
-          delay={100}
-          duration={0.6}
+          text="Welcome, register your account!"
+          className="text-4xl font-bold text-center text-white drop-shadow-lg pb-2"
+          delay={50}
+          duration={0.3}
           ease="power3.out"
           splitType="chars"
           from={{ opacity: 0, y: 40 }}
@@ -167,14 +188,51 @@ export default function LoginPage() {
           textAlign="center"
           // onLetterAnimationComplete={handleAnimationComplete}
         />
+
         <Text
-          text="Enter your credentials to access your account."
+          text="Enter your credentials to register your account."
           className="text-white"
         />
       </div>
       <CardContainer className="w-full mx-5 lg:w-1/4 border-none shadow-secondary-600 shadow-lg rounded-lg min-h-[350px] bg-gray-50">
         <form onSubmit={formik.handleSubmit}>
           <div className="space-y-6">
+            <InputField
+              label="Name"
+              placeholder="John"
+              type="text"
+              name="name"
+              required
+              labelClassName="text-gray-600"
+              errorMessage={
+                formik.touched.name && formik.errors.name
+                  ? String(formik.errors.name)
+                  : ""
+              }
+              disabled={isLoading}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.name}
+              success={formik.touched.name && !formik.errors.name}
+            />
+            <InputField
+              label="Last Name"
+              placeholder="Doe"
+              type="text"
+              name="lastName"
+              required
+              labelClassName="text-gray-600"
+              errorMessage={
+                formik.touched.lastName && formik.errors.lastName
+                  ? String(formik.errors.lastName)
+                  : ""
+              }
+              disabled={isLoading}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.lastName}
+              success={formik.touched.lastName && !formik.errors.lastName}
+            />
             <InputField
               label="Email"
               placeholder="you@example.com"
@@ -211,9 +269,29 @@ export default function LoginPage() {
               value={formik.values.password}
               success={formik.touched.password && !formik.errors.password}
             />
-            <div className="text-sm text-end text-primary-700 hover:text-primary-500 transition-colors">
-              <Link href="/register">Forgot your password?</Link>
-            </div>
+            <InputField
+              label="Confirm Password"
+              placeholder="••••••••"
+              type="password"
+              name="confirmPassword"
+              required
+              labelClassName="text-gray-600"
+              errorMessage={
+                formik.touched.confirmPassword && formik.errors.confirmPassword
+                  ? String(formik.errors.confirmPassword)
+                  : ""
+              }
+              disabled={isLoading}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.confirmPassword}
+              success={
+                formik.touched.confirmPassword && !formik.errors.confirmPassword
+              }
+            />
+            {/* <div className="text-sm text-end text-primary-700 hover:text-primary-500 transition-colors">
+              <Link href="/login">Already have an account?</Link>
+            </div> */}
             <ButtonField
               type="submit"
               variant="primary"
@@ -222,18 +300,18 @@ export default function LoginPage() {
               loading={isLoading}
               disabled={isLoading}
             >
-              Login
+              Register
             </ButtonField>
           </div>
         </form>
       </CardContainer>
       <div className="mt-4 text-white/80">
-        Don&apos;t have an account?{" "}
+        Already have an account?{" "}
         <Link
-          href="/register"
+          href="/login"
           className="text-white hover:text-primary-500 transition-colors"
         >
-          Sign up
+          Login
         </Link>
       </div>
       {/* Footer */}
