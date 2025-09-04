@@ -16,6 +16,7 @@ import { Title } from "@/components/ui/atomic-design/typography/Title";
 import { Text } from "@/components/ui/atomic-design/typography/Text";
 import Link from "next/link";
 import Image from "next/image";
+import SplitText from "@/components/animated/SplitText";
 
 // Esquema de validación con Yup
 const LoginSchema = Yup.object().shape({
@@ -427,7 +428,21 @@ export default function LoginPage() {
           />
         </div>
 
-        <Title title="Welcome Back" className="text-white" />
+        {/* <Title title="Welcome Back" className="text-white" /> */}
+        <SplitText
+          text="Welcome Back!"
+          className="text-5xl font-bold text-center text-white drop-shadow-lg"
+          delay={100}
+          duration={0.6}
+          ease="power3.out"
+          splitType="chars"
+          from={{ opacity: 0, y: 40 }}
+          to={{ opacity: 1, y: 0 }}
+          threshold={0.1}
+          rootMargin="-100px"
+          textAlign="center"
+          // onLetterAnimationComplete={handleAnimationComplete}
+        />
         <Text
           text="Enter your credentials to access your account."
           className="text-white"
