@@ -41,7 +41,6 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
     const inputId = id || `input-${generatedId}`;
     const hasError = !!errorMessage || error;
     const hasSuccess = !!successMessage || success;
-
     return (
       <div className={cn("space-y-2", className)}>
         {label && (
@@ -71,8 +70,8 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
             {helperText && !hasError && !hasSuccess && (
               <p className="text-sm text-text-tertiary">{helperText}</p>
             )}
-            {typeof errors === "string" && (
-              <p className="text-sm text-error">{errors}</p>
+            {errorMessage && (
+              <p className="text-sm text-error">{errorMessage}</p>
             )}
             {successMessage && (
               <p className="text-sm text-success">{successMessage}</p>

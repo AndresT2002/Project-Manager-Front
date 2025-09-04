@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { Formik, Form, Field, useFormik } from "formik";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
+import { useFormik } from "formik";
 import * as Yup from "yup";
 import {
   InputField,
@@ -21,18 +21,19 @@ import SplitText from "@/components/animated/SplitText";
 // Esquema de validación con Yup
 const LoginSchema = Yup.object().shape({
   email: Yup.string()
-    .email("Correo electrónico inválido")
-    .required("El correo electrónico es obligatorio")
-    .max(100, "El correo electrónico es demasiado largo"),
+    .email("Email invalid")
+    .required("Email is required")
+    .max(100, "Email is too long"),
   password: Yup.string()
-    .required("La contraseña es obligatoria")
-    .max(50, "La contraseña es demasiado larga"),
+    .required("Password is required")
+    .max(50, "Password is too long"),
 });
 
 interface LoginFormValues {
   email: string;
   password: string;
 }
+const currentYear = new Date().getFullYear();
 
 export default function LoginPage() {
   const {
@@ -43,7 +44,6 @@ export default function LoginPage() {
     clearError,
   } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [initialCheckComplete, setInitialCheckComplete] = useState(false);
 
   const initialValues: LoginFormValues = {
@@ -76,42 +76,42 @@ export default function LoginPage() {
     }
   }, []);
 
-  const handleSubmit = async (
-    values: LoginFormValues,
-    {
-      setSubmitting,
-      setErrors,
-    }: {
-      setSubmitting: (isSubmitting: boolean) => void;
-      setErrors: (errors: Record<string, string>) => void;
-    }
-  ) => {
-    setIsSubmitting(true);
-
-    try {
-      await login(values);
-      // El hook ya maneja la redirección
-      window.location.href = "/dashboard";
-    } catch (err) {
-      const error = err as Error;
-      const errorMessage = error.message;
-
-      // Manejar errores específicos del servidor
-      if (errorMessage?.includes("email")) {
-        setErrors({ email: errorMessage });
-      } else if (
-        errorMessage?.includes("contraseña") ||
-        errorMessage?.includes("password")
-      ) {
-        setErrors({ password: errorMessage });
-      } else {
-        // El error ya está manejado por el hook useAuth
+  // 🎯 BUENA PRÁCTICA: useCallback para funciones estables
+  const handleSubmit = useCallback(
+    async (
+      values: LoginFormValues,
+      {
+        setSubmitting,
+        setErrors,
+      }: {
+        setSubmitting: (isSubmitting: boolean) => void;
+        setErrors: (errors: Record<string, string>) => void;
       }
-    } finally {
-      setIsSubmitting(false);
-      setSubmitting(false);
-    }
-  };
+    ) => {
+      try {
+        await login(values);
+        window.location.href = "/dashboard";
+      } catch (err) {
+        const error = err as Error;
+        const errorMessage = error.message;
+
+        if (errorMessage?.includes("email")) {
+          setErrors({ email: errorMessage });
+        } else if (
+          errorMessage?.includes("contraseña") ||
+          errorMessage?.includes("password")
+        ) {
+          setErrors({ password: errorMessage });
+        }
+      } finally {
+        setSubmitting(false);
+      }
+    },
+    [login]
+  );
+
+  // 🎯 CORRECCIÓN: No usar hooks dentro de useMemo
+  // useFormik ya maneja internamente la optimización
   const formik = useFormik({
     initialValues,
     validationSchema: LoginSchema,
@@ -130,9 +130,9 @@ export default function LoginPage() {
           </div>
           <div className="space-y-2">
             <h3 className="text-lg font-semibold text-text-primary">
-              Verificando sesión...
+              Verifying session...
             </h3>
-            <p className="text-sm text-text-secondary">Un momento por favor</p>
+            <p className="text-sm text-text-secondary">Please wait</p>
           </div>
         </div>
       </div>
@@ -448,50 +448,60 @@ export default function LoginPage() {
           className="text-white"
         />
       </div>
-
       <CardContainer className="w-full mx-5 lg:w-1/4 border-none shadow-secondary-600 shadow-lg rounded-lg min-h-[350px] bg-gray-50">
-        <Formik
-          initialValues={initialValues}
-          onSubmit={handleSubmit}
-          validationSchema={LoginSchema}
-        >
-          <Form>
-            <div className="space-y-6">
-              <InputField
-                label="Email"
-                placeholder="you@example.com"
-                type="email"
-                required
-                labelClassName="text-gray-600"
-                errors={formik.errors.email}
-                disabled={isLoading || isSubmitting}
-                success={formik.touched.email && !formik.errors.email}
-              />
-              <InputField
-                label="Password"
-                placeholder="••••••••"
-                type="password"
-                required
-                labelClassName="text-gray-600"
-                errors={formik.errors.password}
-                disabled={isLoading || isSubmitting}
-                success={formik.touched.password && !formik.errors.password}
-              />
-              <div className="text-sm text-end text-primary-700 hover:text-primary-500 transition-colors">
-                <Link href="/register">Forgot your password?</Link>
-              </div>
-              <ButtonField
-                type="submit"
-                variant="primary"
-                fullWidth
-                className="h-12 text-lg"
-                loading={isLoading || isSubmitting}
-              >
-                Login
-              </ButtonField>
+        <form onSubmit={formik.handleSubmit}>
+          <div className="space-y-6">
+            <InputField
+              label="Email"
+              placeholder="you@example.com"
+              type="email"
+              name="email"
+              required
+              labelClassName="text-gray-600"
+              errorMessage={
+                formik.touched.email && formik.errors.email
+                  ? String(formik.errors.email)
+                  : ""
+              }
+              disabled={isLoading}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.email}
+              success={formik.touched.email && !formik.errors.email}
+            />
+            <InputField
+              label="Password"
+              placeholder="••••••••"
+              type="password"
+              name="password"
+              required
+              labelClassName="text-gray-600"
+              errorMessage={
+                formik.touched.password && formik.errors.password
+                  ? String(formik.errors.password)
+                  : ""
+              }
+              disabled={isLoading}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.password}
+              success={formik.touched.password && !formik.errors.password}
+            />
+            <div className="text-sm text-end text-primary-700 hover:text-primary-500 transition-colors">
+              <Link href="/register">Forgot your password?</Link>
             </div>
-          </Form>
-        </Formik>
+            <ButtonField
+              type="submit"
+              variant="primary"
+              fullWidth
+              className="h-12 text-lg"
+              loading={isLoading}
+              disabled={isLoading}
+            >
+              Login
+            </ButtonField>
+          </div>
+        </form>
       </CardContainer>
       <div className="mt-4 text-white/80">
         Don't have an account?{" "}
@@ -502,6 +512,27 @@ export default function LoginPage() {
           Sign up
         </Link>
       </div>
+      {/* Footer */}
+      <footer className="mt-20 py-8 text-center relative z-10 text-white">
+        <div className="max-w-4xl mx-auto px-8">
+          <div className="flex flex-col md:flex-row items-center justify-between">
+            <div className="text-sm text-white mb-4 md:mb-0">
+              © {currentYear} Orbitly project manager. All rights reserved.
+            </div>
+            <div className="flex space-x-6 text-sm text-white">
+              <a href="#" className="hover:text-primary-600 transition-colors">
+                Terms of service
+              </a>
+              <a href="#" className="hover:text-primary-600 transition-colors">
+                Privacy policy
+              </a>
+              <a href="#" className="hover:text-primary-600 transition-colors">
+                Support
+              </a>
+            </div>
+          </div>
+        </div>
+      </footer>
     </section>
   );
 }
