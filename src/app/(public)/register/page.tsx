@@ -7,7 +7,7 @@ import { InputField, ButtonField } from "@/components/ui/atomic-design";
 import { Shield } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useValidateSession } from "@/hooks/useValidateSession";
-import { CardContainer } from "@/components/ui/atomic-design/atoms/Card";
+import { CardContainer } from "@/components/ui/atomic-design/molecules/Card";
 import { Text } from "@/components/ui/atomic-design/typography/Text";
 import Link from "next/link";
 import Image from "next/image";

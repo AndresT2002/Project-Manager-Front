@@ -8,11 +8,14 @@ export async function GET() {
     return NextResponse.json({ error: "No refresh token" }, { status: 401 });
   }
 
-  const res = await fetch(`${process.env.BACKEND_URL}/auth/refresh`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ refreshToken }),
-  });
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/refresh`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ refreshToken }),
+    }
+  );
 
   if (!res.ok) {
     return NextResponse.json({ error: "Refresh inválido" }, { status: 401 });

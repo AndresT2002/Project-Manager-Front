@@ -10,7 +10,7 @@ async function handleAuthRequest() {
     }
 
     // Verificar el token con el backend
-    const res = await fetch(`${process.env.BACKEND_URL}/auth/me`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/me`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -27,7 +27,7 @@ async function handleAuthRequest() {
 
       // Intentar refresh token
       const refreshRes = await fetch(
-        `${process.env.BACKEND_URL}/auth/refresh`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/refresh`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

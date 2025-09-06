@@ -9,7 +9,7 @@ export async function POST() {
     if (accessToken) {
       // Intentar hacer logout en el backend
       try {
-        await fetch(`${process.env.BACKEND_URL}/auth/logout`, {
+        await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/logout`, {
           method: "POST",
           headers: {
             Authorization: `Bearer ${accessToken}`,
