@@ -79,7 +79,7 @@ export function useAuth() {
         user: null,
         isAuthenticated: false,
         isLoading: false,
-        error: "Error al verificar la autenticación",
+        error: "Error verifying authentication",
       });
     }
   }, [setAuthState]);
@@ -100,7 +100,7 @@ export function useAuth() {
 
         if (!response.ok) {
           const errorData = await response.json();
-          const errorMessage = errorData.error || "Error al iniciar sesión";
+          const errorMessage = errorData.error || "Error logging in";
 
           setAuthState((prev) => ({
             ...prev,

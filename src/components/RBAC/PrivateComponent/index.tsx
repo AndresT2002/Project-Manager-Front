@@ -53,9 +53,9 @@ const PrivateComponent: React.FC<PrivateComponentProps> = ({
           </div>
           <div className="space-y-2">
             <h3 className="text-lg font-semibold text-text-primary">
-              Cargando...
+              Loading...
             </h3>
-            <p className="text-sm text-text-secondary">Un momento por favor</p>
+            <p className="text-sm text-text-secondary">Please wait</p>
           </div>
         </div>
       </div>

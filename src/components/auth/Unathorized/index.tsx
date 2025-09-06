@@ -23,15 +23,15 @@ const Unauthorized = () => {
         </motion.div>
 
         {/* Título */}
-        <h1 className="text-3xl font-bold text-red-700">Sin permisos</h1>
+        <h1 className="text-3xl font-bold text-red-700">Unauthorized</h1>
         <p className="text-base text-gray-600">
-          No tienes permisos para acceder a esta página.
+          You are not authorized to access this page.
         </p>
 
         {/* Mensaje adicional */}
         <p className="text-sm text-gray-500">
-          Si crees que esto es un error, por favor contacta a tu administrador
-          de sistema.
+          If you believe this is an error, please contact your system
+          administrator.
         </p>
 
         {/* Acción */}
@@ -41,7 +41,7 @@ const Unauthorized = () => {
             className="rounded-xl shadow-lg hover:scale-105 transition-transform"
             onClick={() => router.push(Pages.HOME)}
           >
-            Volver a la página de inicio
+            Go to home page
           </Button>
         </div>
       </motion.div>
