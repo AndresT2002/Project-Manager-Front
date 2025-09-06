@@ -5,9 +5,9 @@ import { useAuth } from "@/hooks/useAuth";
 import Unathorized from "@/components/auth/Unathorized";
 import { getRouteConfig } from "@/functions/RBAC";
 import { usePathname, useRouter } from "next/navigation";
-import { Role } from "@/types/enums";
+import { Role, Pages } from "@/types/enums";
 import { EXCLUDED_ROLE_ROUTES } from "@/constants/RBAC";
-import { Pages } from "@/types/enums";
+import { DashboardLayout } from "@/components/layout/DashboardLayout";
 
 interface PrivateComponentProps {
   children: React.ReactNode;
@@ -80,6 +80,13 @@ const PrivateComponent: React.FC<PrivateComponentProps> = ({
   }
 
   // Usuario autenticado y con permisos adecuados
+  // Determinar si debe mostrar el sidebar (solo en rutas protegidas)
+  const shouldShowSidebar = !isExcludedRoleRoute && isAuthenticated;
+
+  if (shouldShowSidebar) {
+    return <DashboardLayout>{children}</DashboardLayout>;
+  }
+
   return <>{children}</>;
 };
 

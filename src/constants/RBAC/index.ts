@@ -10,7 +10,7 @@ export const ROLE_ROUTES: RouteConfig[] = [
   },
   {
     path: Pages.DASHBOARD,
-    requiredRoles: [Role.USER, Role.ADMIN],
+    requiredRoles: [Role.USER, Role.ADMIN, Role.LEADER],
     title: "Dashboard",
     description: "Panel principal de usuario",
   },
@@ -24,4 +24,4 @@ export const ROLE_ROUTES: RouteConfig[] = [
   // },
 ];
 
-export const EXCLUDED_ROLE_ROUTES = [Pages.LOGIN, Pages.REGISTER];
+export const EXCLUDED_ROLE_ROUTES = [Pages.LOGIN, Pages.REGISTER, Pages.HOME];

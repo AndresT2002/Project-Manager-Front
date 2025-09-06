@@ -10,6 +10,7 @@ enum Pages {
   ADMIN = "/admin",
   UNAUTHORIZED = "/unauthorized",
   HOME = "/",
+  PROJECTS = "/projects",
 }
 
 export { Role, Pages };

@@ -24,3 +24,6 @@ export { default as FormSection } from "@/components/ui/atomic-design/organisms/
 
 // Templates - Layouts
 export { default as FormTemplate } from "@/components/ui/atomic-design/templates/FormTemplate";
+
+// Shadcn Components
+export * from "@/components/ui/atomic-design/shadcn/sidebar";
