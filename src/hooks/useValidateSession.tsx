@@ -32,7 +32,6 @@ export const useValidateSession = (redirectTo: string) => {
     // Si está cargando por primera vez, configurar timeout de seguridad
     if (isLoading && !timeoutRef.current) {
       timeoutRef.current = setTimeout(() => {
-        console.warn("Session validation timeout - forcing completion");
         setInitialCheckComplete(true);
       }, 3000); // 3 segundos máximo
     }
