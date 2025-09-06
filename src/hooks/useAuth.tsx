@@ -122,30 +122,33 @@ export function useAuth() {
     [setAuthState, checkAuthStatus]
   );
 
-  const register = useCallback(
-    async (credentials: RegisterCredentials) => {
-      try {
-        setAuthState((prev) => ({ ...prev, isLoading: true, error: null }));
+  const register = useCallback(async (credentials: RegisterCredentials) => {
+    try {
+      setAuthState((prev) => ({ ...prev, isLoading: true, error: null }));
 
-        const response = await fetch("/api/auth/register", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(credentials),
-        });
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(credentials),
+      });
 
-        if (!response.ok) {
-          const errorData = await response.json();
-          const errorMessage = errorData.error || "Error registering user";
-          throw new Error(errorMessage);
-        }
-
-        return { success: true };
-      } catch (error) {
-        throw error;
+      if (!response.ok) {
+        const errorData = await response.json();
+        const errorMessage = errorData.error || "Error registering user";
+        setAuthState((prev) => ({ ...prev, isLoading: false }));
+        throw new Error(errorMessage);
       }
-    },
-    [setAuthState]
-  );
+
+      // Reset loading state after successful registration
+      setAuthState((prev) => ({ ...prev, isLoading: false }));
+
+      return { success: true };
+    } catch (error) {
+      // Reset loading state on error
+      setAuthState((prev) => ({ ...prev, isLoading: false }));
+      throw error;
+    }
+  }, []);
 
   // Función para cerrar sesión
   const logout = useCallback(async () => {
