@@ -1,7 +1,10 @@
 import { AlertTriangle } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/atomic-design";
+import { Pages } from "@/types/enums";
+import { useRouter } from "next/navigation";
 const Unauthorized = () => {
+  const router = useRouter();
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-100 via-white to-red-200 p-6">
       <motion.div
@@ -36,7 +39,7 @@ const Unauthorized = () => {
           <Button
             variant="primary"
             className="rounded-xl shadow-lg hover:scale-105 transition-transform"
-            onClick={() => (window.location.href = "/")}
+            onClick={() => router.push(Pages.HOME)}
           >
             Volver a la página de inicio
           </Button>

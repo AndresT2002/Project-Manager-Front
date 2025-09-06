@@ -12,6 +12,9 @@ import { Text } from "@/components/ui/atomic-design/typography/Text";
 import Link from "next/link";
 import Image from "next/image";
 import SplitText from "@/components/animated/SplitText";
+import { Pages } from "@/types/enums";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 // Esquema de validación con Yup
 const LoginSchema = Yup.object().shape({
@@ -31,10 +34,10 @@ interface LoginFormValues {
 const currentYear = new Date().getFullYear();
 
 export default function LoginPage() {
-  const { login, isLoading, error: authError, clearError } = useAuth();
+  const { login, error: authError, clearError } = useAuth();
   const { isSessionValidating } = useValidateSession("/dashboard");
   const [showPassword, setShowPassword] = useState(false);
-
+  const router = useRouter();
   const initialValues: LoginFormValues = {
     email: "",
     password: "",
@@ -60,19 +63,15 @@ export default function LoginPage() {
     ) => {
       try {
         await login(values);
-        window.location.href = "/dashboard";
+        router.push(Pages.DASHBOARD);
       } catch (err) {
         const error = err as Error;
         const errorMessage = error.message;
-
-        if (errorMessage?.includes("email")) {
-          setErrors({ email: errorMessage });
-        } else if (
-          errorMessage?.includes("contraseña") ||
-          errorMessage?.includes("password")
-        ) {
-          setErrors({ password: errorMessage });
-        }
+        toast.error(errorMessage, {
+          description:
+            "Please validate your credentials and try again or contact support",
+          position: "top-right",
+        });
       } finally {
         setSubmitting(false);
       }
@@ -164,7 +163,7 @@ export default function LoginPage() {
                   ? String(formik.errors.email)
                   : ""
               }
-              disabled={isLoading}
+              disabled={formik.isSubmitting}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               value={formik.values.email}
@@ -182,22 +181,22 @@ export default function LoginPage() {
                   ? String(formik.errors.password)
                   : ""
               }
-              disabled={isLoading}
+              disabled={formik.isSubmitting}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               value={formik.values.password}
               success={formik.touched.password && !formik.errors.password}
             />
             <div className="text-sm text-end text-primary-700 hover:text-primary-500 transition-colors">
-              <Link href="/register">Forgot your password?</Link>
+              <Link href={Pages.REGISTER}>Forgot your password?</Link>
             </div>
             <ButtonField
               type="submit"
               variant="primary"
               fullWidth
               className="h-12 text-lg"
-              loading={isLoading}
-              disabled={isLoading}
+              loading={formik.isSubmitting}
+              disabled={formik.isSubmitting}
             >
               Login
             </ButtonField>
@@ -207,7 +206,7 @@ export default function LoginPage() {
       <div className="mt-4 text-white/80">
         Don&apos;t have an account?{" "}
         <Link
-          href="/register"
+          href={Pages.REGISTER}
           className="text-white hover:text-primary-500 transition-colors"
         >
           Sign up

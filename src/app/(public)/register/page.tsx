@@ -13,6 +13,8 @@ import Link from "next/link";
 import Image from "next/image";
 import SplitText from "@/components/animated/SplitText";
 import { toast } from "sonner";
+import { Pages } from "@/types/enums";
+import { useRouter } from "next/navigation";
 
 // Esquema de validación con Yup
 const RegisterSchema = Yup.object().shape({
@@ -46,7 +48,7 @@ export default function RegisterPage() {
   const { register, error: authError, clearError } = useAuth();
   const { isSessionValidating } = useValidateSession("/dashboard");
   const [showPassword, setShowPassword] = useState(false);
-
+  const router = useRouter();
   const initialValues: RegisterFormValues = {
     email: "",
     password: "",
@@ -79,7 +81,7 @@ export default function RegisterPage() {
           description: "Please login to continue",
           position: "top-right",
         });
-        window.location.href = "/login";
+        router.push(Pages.LOGIN);
       } catch (err) {
         toast.error((err as Error).message, {
           description: "Please try again or contact support",
@@ -276,7 +278,7 @@ export default function RegisterPage() {
       <div className="mt-4 text-white/80">
         Already have an account?{" "}
         <Link
-          href="/login"
+          href={Pages.LOGIN}
           className="text-white hover:text-primary-500 transition-colors"
         >
           Login

@@ -8,6 +8,8 @@ enum Pages {
   REGISTER = "/register",
   DASHBOARD = "/dashboard",
   ADMIN = "/admin",
+  UNAUTHORIZED = "/unauthorized",
+  HOME = "/",
 }
 
 export { Role, Pages };

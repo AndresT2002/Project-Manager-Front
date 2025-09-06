@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import Unathorized from "@/components/auth/Unathorized";
 import { getRouteConfig } from "@/functions/RBAC";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Role } from "@/types/enums";
 import { EXCLUDED_ROLE_ROUTES } from "@/constants/RBAC";
 import { Pages } from "@/types/enums";
@@ -12,18 +12,18 @@ import { Pages } from "@/types/enums";
 interface PrivateComponentProps {
   children: React.ReactNode;
   //   requiredRoles?: string[];
-  fallback?: React.ReactNode;
+  //   fallback?: React.ReactNode;
 }
 
 const PrivateComponent: React.FC<PrivateComponentProps> = ({
   children,
   //   requiredRoles = [],
-  fallback,
+  //   fallback,
 }) => {
   const { isAuthenticated, isLoading, user } = useAuth();
   const pathname = usePathname();
   const [initialCheckComplete, setInitialCheckComplete] = useState(false);
-
+  const router = useRouter();
   // TODOS los hooks deben ejecutarse ANTES de cualquier return condicional
   // Controlar la verificación inicial para evitar mostrar contenido brevemente
   useEffect(() => {
@@ -64,25 +64,8 @@ const PrivateComponent: React.FC<PrivateComponentProps> = ({
 
   // Usuario no autenticado
   if (!isAuthenticated) {
-    return (
-      fallback || (
-        <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 relative overflow-hidden flex items-center justify-center">
-          <div className="text-center space-y-4">
-            <div className="inline-flex items-center justify-center w-12 h-12 bg-red-100 rounded-full">
-              <div className="h-6 w-6 text-red-600">⚠️</div>
-            </div>
-            <div className="space-y-2">
-              <h3 className="text-lg font-semibold text-text-primary">
-                Acceso denegado
-              </h3>
-              <p className="text-sm text-text-secondary">
-                Debes iniciar sesión para acceder a esta página
-              </p>
-            </div>
-          </div>
-        </div>
-      )
-    );
+    router.push(Pages.LOGIN);
+    return null;
   }
 
   const requiredRoles = getRouteConfig(pathname)?.requiredRoles;
