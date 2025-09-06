@@ -51,6 +51,8 @@ export async function POST(req: Request) {
 
     return response;
   } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error("Error during login:", error);
     return NextResponse.json(
       { error: "Error interno del servidor" },
       { status: 500 }
