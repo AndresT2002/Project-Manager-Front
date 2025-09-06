@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { AppSidebar } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/ui/atomic-design/organisms/sidebar";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { cn } from "@/lib/utils";
 

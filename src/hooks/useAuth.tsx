@@ -166,11 +166,6 @@ export function useAuth() {
         error: null,
       });
 
-      // Pequeño delay antes de redirigir para evitar conflictos de estado
-      setTimeout(() => {
-        router.push("/");
-      }, 100);
-
       return { success: true };
     } catch (error) {
       // Aun si hay error, limpiamos el estado local
@@ -181,13 +176,9 @@ export function useAuth() {
         error: null,
       });
 
-      setTimeout(() => {
-        router.push("/");
-      }, 100);
-
       throw error;
     }
-  }, [setAuthState, router]);
+  }, [setAuthState]);
 
   // Función para refrescar el token
   const refreshToken = useCallback(async () => {

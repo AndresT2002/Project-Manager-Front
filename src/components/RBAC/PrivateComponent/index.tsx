@@ -24,6 +24,10 @@ const PrivateComponent: React.FC<PrivateComponentProps> = ({
   const pathname = usePathname();
   const [initialCheckComplete, setInitialCheckComplete] = useState(false);
   const router = useRouter();
+
+  // Declarar variables necesarias antes de los hooks
+  const isExcludedRoleRoute = EXCLUDED_ROLE_ROUTES.includes(pathname as Pages);
+
   // TODOS los hooks deben ejecutarse ANTES de cualquier return condicional
   // Controlar la verificación inicial para evitar mostrar contenido brevemente
   useEffect(() => {
@@ -36,7 +40,24 @@ const PrivateComponent: React.FC<PrivateComponentProps> = ({
 
     return () => clearTimeout(timeoutId);
   }, [isLoading, initialCheckComplete]);
-  const isExcludedRoleRoute = EXCLUDED_ROLE_ROUTES.includes(pathname as Pages);
+
+  // Manejar redirección cuando el usuario no está autenticado
+  useEffect(() => {
+    if (
+      initialCheckComplete &&
+      !isLoading &&
+      !isAuthenticated &&
+      !isExcludedRoleRoute
+    ) {
+      router.push(Pages.LOGIN);
+    }
+  }, [
+    initialCheckComplete,
+    isLoading,
+    isAuthenticated,
+    isExcludedRoleRoute,
+    router,
+  ]);
 
   // Ruta excluida - renderizar sin verificación de autenticación
   if (isExcludedRoleRoute) {
@@ -64,7 +85,6 @@ const PrivateComponent: React.FC<PrivateComponentProps> = ({
 
   // Usuario no autenticado
   if (!isAuthenticated) {
-    router.push(Pages.LOGIN);
     return null;
   }
 

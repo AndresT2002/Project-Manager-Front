@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Pages, Role } from "@/types/enums";
 import {
@@ -49,9 +49,10 @@ const AppSidebar: React.FC<AppSidebarProps> = ({
   onExpandedChange,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
-  const { user, logout } = useAuth();
+  const { user, logout, isAuthenticated } = useAuth();
   const { isMobileOrTablet } = useIsMobile();
   const pathname = usePathname();
+  const router = useRouter();
 
   // Obtener inicial del nombre
   const getInitial = (name: string) => {
@@ -59,9 +60,18 @@ const AppSidebar: React.FC<AppSidebarProps> = ({
   };
 
   // Función para hacer logout
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch (error) {}
   };
+
+  // Manejar redirección después del logout
+  useEffect(() => {
+    if (!isAuthenticated && user === null) {
+      router.push(Pages.LOGIN);
+    }
+  }, [isAuthenticated, user, router]);
 
   const handleMouseEnter = () => {
     setIsHovered(true);
