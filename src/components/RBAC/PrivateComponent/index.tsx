@@ -7,6 +7,7 @@ import { getRouteConfig } from "@/functions/RBAC";
 import { usePathname } from "next/navigation";
 import { Role } from "@/types/enums";
 import { EXCLUDED_ROLE_ROUTES } from "@/constants/RBAC";
+import { Pages } from "@/types/enums";
 
 interface PrivateComponentProps {
   children: React.ReactNode;
@@ -35,8 +36,7 @@ const PrivateComponent: React.FC<PrivateComponentProps> = ({
 
     return () => clearTimeout(timeoutId);
   }, [isLoading, initialCheckComplete]);
-
-  const isExcludedRoleRoute = EXCLUDED_ROLE_ROUTES.includes(pathname);
+  const isExcludedRoleRoute = EXCLUDED_ROLE_ROUTES.includes(pathname as Pages);
 
   // Ruta excluida - renderizar sin verificación de autenticación
   if (isExcludedRoleRoute) {
@@ -86,7 +86,7 @@ const PrivateComponent: React.FC<PrivateComponentProps> = ({
   }
 
   const requiredRoles = getRouteConfig(pathname)?.requiredRoles;
-  console.log(requiredRoles);
+
   // Verificar roles si se requieren
   if (requiredRoles && requiredRoles.length > 0 && user?.role) {
     const hasRequiredRole = requiredRoles.includes(user.role as Role);

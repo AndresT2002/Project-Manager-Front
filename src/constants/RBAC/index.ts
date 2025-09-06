@@ -1,15 +1,15 @@
-import { Role } from "@/types/enums";
+import { Role, Pages } from "@/types/enums";
 import { RouteConfig } from "@/types/route-config";
 
 export const ROLE_ROUTES: RouteConfig[] = [
   {
-    path: "/admin",
+    path: Pages.ADMIN,
     requiredRoles: [Role.ADMIN],
     title: "Panel de Administración",
     description: "Gestión avanzada del sistema",
   },
   {
-    path: "/dashboard",
+    path: Pages.DASHBOARD,
     requiredRoles: [Role.USER, Role.ADMIN],
     title: "Dashboard",
     description: "Panel principal de usuario",
@@ -24,4 +24,4 @@ export const ROLE_ROUTES: RouteConfig[] = [
   // },
 ];
 
-export const EXCLUDED_ROLE_ROUTES = ["/login", "/register", "/components", "/"];
+export const EXCLUDED_ROLE_ROUTES = [Pages.LOGIN, Pages.REGISTER];

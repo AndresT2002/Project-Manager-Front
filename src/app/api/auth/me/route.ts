@@ -17,7 +17,6 @@ async function handleAuthRequest() {
         "Content-Type": "application/json",
       },
     });
-    console.log(res);
     if (!res.ok) {
       // Si el token es inválido, intentar refresh
       const refreshToken = (await cookies()).get("refreshToken")?.value;

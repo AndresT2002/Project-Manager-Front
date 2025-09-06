@@ -6,11 +6,13 @@ import * as Yup from "yup";
 import { InputField, ButtonField } from "@/components/ui/atomic-design";
 import { Shield } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { useValidateSession } from "@/hooks/useValidateSession";
 import { CardContainer } from "@/components/ui/atomic-design/atoms/Card";
 import { Text } from "@/components/ui/atomic-design/typography/Text";
 import Link from "next/link";
 import Image from "next/image";
 import SplitText from "@/components/animated/SplitText";
+import { toast } from "sonner";
 
 // Esquema de validación con Yup
 const RegisterSchema = Yup.object().shape({
@@ -25,14 +27,10 @@ const RegisterSchema = Yup.object().shape({
     .required("Confirm password is required")
     .max(50, "Confirm password is too long")
     .oneOf([Yup.ref("password")], "Passwords must match"),
-  name: Yup.string()
-    .required("Name is required")
-    .max(50, "Name is too long")
-    .matches(/^[a-zA-Z]+$/, "Name must contain only letters"),
+  name: Yup.string().required("Name is required").max(50, "Name is too long"),
   lastName: Yup.string()
     .required("Last name is required")
-    .max(50, "Last name is too long")
-    .matches(/^[a-zA-Z]+$/, "Last name must contain only letters"),
+    .max(50, "Last name is too long"),
 });
 
 interface RegisterFormValues {
@@ -45,15 +43,9 @@ interface RegisterFormValues {
 const currentYear = new Date().getFullYear();
 
 export default function RegisterPage() {
-  const {
-    login,
-    isAuthenticated,
-    isLoading,
-    error: authError,
-    clearError,
-  } = useAuth();
+  const { register, error: authError, clearError } = useAuth();
+  const { isSessionValidating } = useValidateSession("/dashboard");
   const [showPassword, setShowPassword] = useState(false);
-  const [initialCheckComplete, setInitialCheckComplete] = useState(false);
 
   const initialValues: RegisterFormValues = {
     email: "",
@@ -62,24 +54,6 @@ export default function RegisterPage() {
     name: "",
     lastName: "",
   };
-
-  // Controlar la verificación inicial
-  useEffect(() => {
-    // Si ya se completó la verificación inicial, no hacer nada
-    if (initialCheckComplete) return;
-
-    // Si terminó de cargar y está autenticado, redirigir inmediatamente
-    if (!isLoading && isAuthenticated) {
-      console.log("Usuario ya autenticado, redirigiendo...");
-      window.location.href = "/dashboard";
-      return;
-    }
-
-    // Si terminó de cargar (ya sea autenticado o no), marcar como completado
-    if (!isLoading) {
-      setInitialCheckComplete(true);
-    }
-  }, [isAuthenticated, isLoading, initialCheckComplete]);
 
   // Limpiar errores cuando cambian los valores del formulario
   useEffect(() => {
@@ -100,28 +74,22 @@ export default function RegisterPage() {
       }
     ) => {
       try {
-        await login(values);
-        window.location.href = "/dashboard";
+        await register(values);
+        toast.success("User registered successfully", {
+          description: "Please login to continue",
+          position: "top-right",
+        });
+        window.location.href = "/login";
       } catch (err) {
-        const error = err as Error;
-        const errorMessage = error.message;
-
-        if (errorMessage?.includes("email")) {
-          setErrors({ email: errorMessage });
-        } else if (errorMessage?.includes("password")) {
-          setErrors({ password: errorMessage });
-        } else if (errorMessage?.includes("confirmPassword")) {
-          setErrors({ confirmPassword: errorMessage });
-        } else if (errorMessage?.includes("name")) {
-          setErrors({ name: errorMessage });
-        } else if (errorMessage?.includes("lastName")) {
-          setErrors({ lastName: errorMessage });
-        }
+        toast.error((err as Error).message, {
+          description: "Please try again or contact support",
+          position: "top-right",
+        });
       } finally {
         setSubmitting(false);
       }
     },
-    [login]
+    [register]
   );
 
   const formik = useFormik({
@@ -133,7 +101,7 @@ export default function RegisterPage() {
   });
 
   // Mostrar loading mientras se verifica la autenticación inicial
-  if (!initialCheckComplete) {
+  if (isSessionValidating) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 relative overflow-hidden flex items-center justify-center">
         <div className="text-center space-y-4">
@@ -209,7 +177,7 @@ export default function RegisterPage() {
                   ? String(formik.errors.name)
                   : ""
               }
-              disabled={isLoading}
+              disabled={formik.isSubmitting}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               value={formik.values.name}
@@ -227,7 +195,7 @@ export default function RegisterPage() {
                   ? String(formik.errors.lastName)
                   : ""
               }
-              disabled={isLoading}
+              disabled={formik.isSubmitting}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               value={formik.values.lastName}
@@ -245,7 +213,7 @@ export default function RegisterPage() {
                   ? String(formik.errors.email)
                   : ""
               }
-              disabled={isLoading}
+              disabled={formik.isSubmitting}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               value={formik.values.email}
@@ -263,7 +231,7 @@ export default function RegisterPage() {
                   ? String(formik.errors.password)
                   : ""
               }
-              disabled={isLoading}
+              disabled={formik.isSubmitting}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               value={formik.values.password}
@@ -281,7 +249,7 @@ export default function RegisterPage() {
                   ? String(formik.errors.confirmPassword)
                   : ""
               }
-              disabled={isLoading}
+              disabled={formik.isSubmitting}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               value={formik.values.confirmPassword}
@@ -297,8 +265,8 @@ export default function RegisterPage() {
               variant="primary"
               fullWidth
               className="h-12 text-lg"
-              loading={isLoading}
-              disabled={isLoading}
+              loading={formik.isSubmitting}
+              disabled={formik.isSubmitting}
             >
               Register
             </ButtonField>

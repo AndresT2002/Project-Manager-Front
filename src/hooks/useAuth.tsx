@@ -18,6 +18,13 @@ export interface LoginCredentials {
   password: string;
 }
 
+export interface RegisterCredentials {
+  email: string;
+  password: string;
+  name: string;
+  lastName: string;
+}
+
 export interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
@@ -115,6 +122,31 @@ export function useAuth() {
       }
     },
     [setAuthState, checkAuthStatus]
+  );
+
+  const register = useCallback(
+    async (credentials: RegisterCredentials) => {
+      try {
+        setAuthState((prev) => ({ ...prev, isLoading: true, error: null }));
+
+        const response = await fetch("/api/auth/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(credentials),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          const errorMessage = errorData.error || "Error registering user";
+          throw new Error(errorMessage);
+        }
+
+        return { success: true };
+      } catch (error) {
+        throw error;
+      }
+    },
+    [setAuthState]
   );
 
   // Función para cerrar sesión
@@ -231,6 +263,7 @@ export function useAuth() {
     refreshToken,
     checkAuthStatus,
     clearError,
+    register,
   };
 }
 

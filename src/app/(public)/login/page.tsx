@@ -6,6 +6,7 @@ import * as Yup from "yup";
 import { InputField, ButtonField } from "@/components/ui/atomic-design";
 import { Shield } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { useValidateSession } from "@/hooks/useValidateSession";
 import { CardContainer } from "@/components/ui/atomic-design/atoms/Card";
 import { Text } from "@/components/ui/atomic-design/typography/Text";
 import Link from "next/link";
@@ -30,38 +31,14 @@ interface LoginFormValues {
 const currentYear = new Date().getFullYear();
 
 export default function LoginPage() {
-  const {
-    login,
-    isAuthenticated,
-    isLoading,
-    error: authError,
-    clearError,
-  } = useAuth();
+  const { login, isLoading, error: authError, clearError } = useAuth();
+  const { isSessionValidating } = useValidateSession("/dashboard");
   const [showPassword, setShowPassword] = useState(false);
-  const [initialCheckComplete, setInitialCheckComplete] = useState(false);
 
   const initialValues: LoginFormValues = {
     email: "",
     password: "",
   };
-
-  // Controlar la verificación inicial
-  useEffect(() => {
-    // Si ya se completó la verificación inicial, no hacer nada
-    if (initialCheckComplete) return;
-
-    // Si terminó de cargar y está autenticado, redirigir inmediatamente
-    if (!isLoading && isAuthenticated) {
-      console.log("Usuario ya autenticado, redirigiendo...");
-      window.location.href = "/dashboard";
-      return;
-    }
-
-    // Si terminó de cargar (ya sea autenticado o no), marcar como completado
-    if (!isLoading) {
-      setInitialCheckComplete(true);
-    }
-  }, [isAuthenticated, isLoading, initialCheckComplete]);
 
   // Limpiar errores cuando cambian los valores del formulario
   useEffect(() => {
@@ -112,7 +89,7 @@ export default function LoginPage() {
   });
 
   // Mostrar loading mientras se verifica la autenticación inicial
-  if (!initialCheckComplete) {
+  if (isSessionValidating) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-secondary-50 relative overflow-hidden flex items-center justify-center">
         <div className="text-center space-y-4">

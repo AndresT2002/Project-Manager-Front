@@ -1,7 +1,7 @@
-import { Role } from "./enums";
+import { Role, Pages } from "./enums";
 
 export interface RouteConfig {
-  path: string;
+  path: Pages;
   requiredRoles: Role[];
   title: string;
   description?: string;
