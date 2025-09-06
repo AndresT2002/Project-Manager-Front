@@ -16,12 +16,7 @@ export async function POST() {
             "Content-Type": "application/json",
           },
         });
-      } catch (backendError) {
-        console.warn(
-          "Backend logout failed, but proceeding with local logout:",
-          backendError
-        );
-      }
+      } catch (backendError) {}
     }
 
     // Limpiar cookies HTTP-only independientemente del resultado del backend
@@ -49,8 +44,6 @@ export async function POST() {
 
     return response;
   } catch (error) {
-    console.error("Logout error:", error);
-
     // Aun si hay error, intentar limpiar las cookies
     const response = NextResponse.json(
       { error: "Error interno del servidor" },

@@ -12,7 +12,6 @@ export async function POST(req: Request) {
 
     if (!res.ok) {
       const errorData = await res.json();
-      console.error("Login failed:", errorData);
       return NextResponse.json(
         { error: errorData.message || "Credenciales inválidas" },
         { status: res.status }
@@ -24,7 +23,6 @@ export async function POST(req: Request) {
 
     // Verificar que los tokens existen
     if (!accessToken || !refreshToken) {
-      console.error("Missing tokens in response:", data);
       return NextResponse.json(
         { error: "Error del servidor: tokens no encontrados" },
         { status: 500 }

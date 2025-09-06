@@ -75,7 +75,6 @@ export function useAuth() {
         });
       }
     } catch (error) {
-      console.error("Error checking auth status:", error);
       setAuthState({
         user: null,
         isAuthenticated: false,
@@ -117,7 +116,6 @@ export function useAuth() {
 
         return { success: true };
       } catch (error) {
-        console.error("Login error:", error);
         throw error;
       }
     },
@@ -158,9 +156,7 @@ export function useAuth() {
       fetch("/api/auth/logout", {
         method: "POST",
         credentials: "include",
-      }).catch((error) => {
-        console.warn("Logout API call failed:", error);
-      });
+      }).catch((error) => {});
 
       // Limpiar estado local inmediatamente para mejor UX
       setAuthState({
@@ -177,7 +173,6 @@ export function useAuth() {
 
       return { success: true };
     } catch (error) {
-      console.error("Logout error:", error);
       // Aun si hay error, limpiamos el estado local
       setAuthState({
         user: null,
@@ -217,7 +212,6 @@ export function useAuth() {
         return { success: false };
       }
     } catch (error) {
-      console.error("Refresh token error:", error);
       setAuthState({
         user: null,
         isAuthenticated: false,
