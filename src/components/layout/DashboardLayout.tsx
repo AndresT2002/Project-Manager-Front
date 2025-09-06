@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { AppSidebar } from "@/components/ui/sidebar";
+import { useIsMobile } from "@/hooks/useIsMobile";
 import { cn } from "@/lib/utils";
 
 interface DashboardLayoutProps {
@@ -14,6 +15,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   className,
 }) => {
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
+  const { isMobileOrTablet } = useIsMobile();
 
   const handleSidebarExpandedChange = (expanded: boolean) => {
     setIsSidebarExpanded(expanded);
@@ -25,11 +27,22 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
       <main
         className={cn(
           "flex-1 transition-all duration-300 ease-in-out",
-          isSidebarExpanded ? "ml-64" : "ml-16",
+          // Solo aplicar margen lateral en desktop
+          !isMobileOrTablet && (isSidebarExpanded ? "ml-64" : "ml-16"),
+          // Aplicar padding bottom en mobile/tablet para la barra inferior
+          isMobileOrTablet && "pb-20", // Espacio para la barra de navegación inferior
           className
         )}
       >
-        <div className="p-8">{children}</div>
+        <div
+          className={cn(
+            "p-8",
+            // Ajustar padding en mobile/tablet
+            isMobileOrTablet && "pb-4"
+          )}
+        >
+          {children}
+        </div>
       </main>
     </div>
   );

@@ -106,8 +106,8 @@ const SidebarMenuButton = React.forwardRef<
   <button
     ref={ref}
     className={cn(
-      "flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200",
-      isActive && "bg-gray-100 text-gray-900",
+      "flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-200",
+      isActive && "bg-gray-300 text-gray-900",
       !isActive && "text-gray-600",
       className
     )}

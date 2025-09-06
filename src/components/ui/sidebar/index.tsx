@@ -16,6 +16,7 @@ import {
   SidebarMenuButton,
 } from "@/components/ui/atomic-design/shadcn/sidebar";
 import { useAuth } from "@/hooks/useAuth";
+import { useIsMobile } from "@/hooks/useIsMobile";
 import { LogOut } from "lucide-react";
 import { Icon } from "@iconify/react";
 
@@ -49,6 +50,7 @@ const AppSidebar: React.FC<AppSidebarProps> = ({
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const { user, logout } = useAuth();
+  const { isMobileOrTablet } = useIsMobile();
   const pathname = usePathname();
 
   // Obtener inicial del nombre
@@ -71,6 +73,61 @@ const AppSidebar: React.FC<AppSidebarProps> = ({
     onExpandedChange?.(false);
   };
 
+  // Renderizar sidebar diferente según dispositivo
+  if (isMobileOrTablet) {
+    return (
+      <div
+        className={cn(
+          "fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 px-4 py-2",
+          className
+        )}
+      >
+        <div className="flex items-center justify-around max-w-md mx-auto">
+          {navigationItems.map((item) => {
+            const isActive = pathname === item.href;
+            const hasRequiredRole = item.visibleRoles.includes(
+              user?.role as Role
+            );
+
+            if (hasRequiredRole) {
+              return (
+                <Link key={item.href} href={item.href} className="relative">
+                  <div className="flex flex-col items-center gap-1 p-2 rounded-lg transition-colors duration-200 hover:bg-gray-100">
+                    {/* Ícono con círculo de fondo cuando está activo */}
+                    <div
+                      className={cn(
+                        "flex items-center justify-center w-8 h-8 rounded-full transition-all duration-200",
+                        isActive
+                          ? "bg-primary-900 text-white shadow-md"
+                          : "text-gray-500 hover:bg-gray-100"
+                      )}
+                    >
+                      {item.icon}
+                    </div>
+
+                    {/* Label (opcional, muy pequeño) */}
+                    <span
+                      className={cn(
+                        "text-xs transition-colors duration-200 mt-1",
+                        isActive
+                          ? "text-primary-900 font-medium"
+                          : "text-gray-500"
+                      )}
+                    >
+                      {item.label}
+                    </span>
+                  </div>
+                </Link>
+              );
+            }
+            return null;
+          })}
+        </div>
+      </div>
+    );
+  }
+
+  // Sidebar para desktop
   return (
     <Sidebar
       variant={isHovered ? "expanded" : "collapsed"}
@@ -134,7 +191,7 @@ const AppSidebar: React.FC<AppSidebarProps> = ({
           <div className="flex items-center gap-3 px-3 py-4">
             {/* Avatar con inicial */}
             <div className="flex-shrink-0">
-              <div className="w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center text-white font-semibold text-sm">
+              <div className="w-8 h-8 bg-primary-900 rounded-full flex items-center justify-center text-white font-semibold text-sm">
                 {getInitial(user?.name || "")}
               </div>
             </div>
@@ -160,7 +217,7 @@ const AppSidebar: React.FC<AppSidebarProps> = ({
           // Estado contraído - Solo avatar y logout centrados
           <div className="flex flex-col items-center gap-2 py-4">
             {/* Avatar más pequeño */}
-            <div className="w-6 h-6 bg-primary-500 rounded-full flex items-center justify-center text-white font-semibold text-xs">
+            <div className="w-6 h-6 bg-primary-900 rounded-full flex items-center justify-center text-white font-semibold text-xs">
               {getInitial(user?.name || "")}
             </div>
 
