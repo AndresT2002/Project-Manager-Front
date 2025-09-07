@@ -14,6 +14,9 @@ interface CardProps {
   className?: string;
   children?: React.ReactNode;
   footer?: React.ReactNode;
+  cardHeaderExtraClassname?: string;
+  cardContentExtraClassname?: string;
+  cardFooterExtraClassname?: string;
 }
 
 const CardContainer: React.FC<CardProps> = ({
@@ -22,15 +25,20 @@ const CardContainer: React.FC<CardProps> = ({
   children,
   footer,
   className,
+  cardHeaderExtraClassname,
+  cardContentExtraClassname,
+  cardFooterExtraClassname,
 }) => {
   return (
     <Card className={cn("bg-white rounded-lg shadow-md", className)}>
-      <CardHeader>
+      <CardHeader className={cn(cardHeaderExtraClassname)}>
         <CardTitle>{title}</CardTitle>
         <CardDescription>{description}</CardDescription>
       </CardHeader>
-      <CardContent>{children}</CardContent>
-      <CardFooter>{footer}</CardFooter>
+      <CardContent className={cn(cardContentExtraClassname)}>
+        {children}
+      </CardContent>
+      <CardFooter className={cn(cardFooterExtraClassname)}>{footer}</CardFooter>
     </Card>
   );
 };
