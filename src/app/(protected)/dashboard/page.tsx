@@ -6,6 +6,8 @@ import { CardDescription } from "@/components/pages/dashboard/CardDescription";
 import { Skeleton } from "@/components/ui/atomic-design/shadcn/skeleton";
 import { Text } from "@/components/ui/atomic-design/typography/Text";
 import { Title } from "@/components/ui/atomic-design/typography/Title";
+import AnimatedContent from "@/components/animated/AnimatedContent";
+import FadeContent from "@/components/animated/FadeContent";
 
 interface StatusCounts {
   open: number;
@@ -57,18 +59,26 @@ const DashboardPage = () => {
           </>
         ) : (
           <>
-            <CardDescription
-              title="Projects in Progress"
-              description={data?.open?.toString() || "7"}
-            />
-            <CardDescription
-              title="Tasks Completed"
-              description={data?.finished?.toString() || "125"}
-            />
-            <CardDescription
-              title="Upcoming Deadlines"
-              description={data?.cancelled?.toString() || "3"}
-            />
+            <FadeContent duration={2000} easing="ease-out" initialOpacity={0.2}>
+              <CardDescription
+                title="Projects in Progress"
+                description={data?.open?.toString() || "7"}
+              />
+            </FadeContent>
+
+            <FadeContent duration={2000} easing="ease-out" initialOpacity={0.2}>
+              <CardDescription
+                title="Tasks Completed"
+                description={data?.finished?.toString() || "125"}
+              />
+            </FadeContent>
+
+            <FadeContent duration={2000} easing="ease-out" initialOpacity={0.2}>
+              <CardDescription
+                title="Upcoming Deadlines"
+                description={data?.cancelled?.toString() || "3"}
+              />
+            </FadeContent>
           </>
         )}
         {error && (
