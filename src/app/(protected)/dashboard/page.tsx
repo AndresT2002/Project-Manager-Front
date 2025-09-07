@@ -6,7 +6,6 @@ import { CardDescription } from "@/components/pages/dashboard/CardDescription";
 import { Skeleton } from "@/components/ui/atomic-design/shadcn/skeleton";
 import { Text } from "@/components/ui/atomic-design/typography/Text";
 import { Title } from "@/components/ui/atomic-design/typography/Title";
-import AnimatedContent from "@/components/animated/AnimatedContent";
 import FadeContent from "@/components/animated/FadeContent";
 
 interface StatusCounts {
